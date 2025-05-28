@@ -1,0 +1,16 @@
+name: Build iOS IPA
+on: push
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.19.5"
+      - run: flutter pub get
+      - run: flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Runner.ipa
+          path: build/ios/ipa/Runner.ipa

@@ -10,7 +10,7 @@ jobs:
           flutter-version: "3.19.5"
       - run: flutter pub get
       - run: flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4  # Pakai v4, bukan v3
         with:
           name: Runner.ipa
-          path: build/ios/ipa/Runner.ipa
+          path: build/ios/ipa/Runner.ipa  # Pastikan path ini sesuai

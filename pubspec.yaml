@@ -1,5 +1,5 @@
 name: alkarim
-description: "A new Flutter project."
+description: "Aplikasi pendamping pembelajaran Al Quran dengan metode Al Karim"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -33,7 +33,22 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
+  http: ^1.0.0
+  shared_preferences: ^2.0.15
   cupertino_icons: ^1.0.8
+  provider: 6.1.5
+  english_words: ^4.0.0
+  google_fonts: ^6.2.1
+  syncfusion_flutter_pdfviewer: ^30.1.38
+  flutter_cache_manager: ^3.3.1
+  path_provider: ^2.1.5
+  path: ^1.9.0
+  pdfx: ^2.4.0
+  just_audio: ^0.10.4
+  audio_service: ^0.18.12
+  audio_session: ^0.2.2
+  table_calendar: ^3.0.9
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
@@ -44,7 +59,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

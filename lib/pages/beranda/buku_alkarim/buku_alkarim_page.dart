@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:alkarim/api/api_service.dart';
 import 'package:alkarim/api/endpoints.dart';
+import 'package:alkarim/app_colors.dart';
 import 'package:alkarim/auth_helper.dart';
 import 'package:alkarim/models/buku_alkarim_response.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,12 @@ class _BukuAlKarimPageState extends State<BukuAlKarimPage> {
   }
 
   Future<void> fetchAndSetupBook() async {
-    final token = AuthHelper.getToken();
+    final token = await AuthHelper.getActiveToken();
+
+    if (token == null) {
+      throw Exception('Pengguna perlu login ulang untuk melanjutkan.');
+    }
+
     final res = await api.request<BukuAlKarimResponse>(
       Endpoints.bukuAlKarim(widget.id),
       RequestType.GET,
@@ -72,7 +78,7 @@ class _BukuAlKarimPageState extends State<BukuAlKarimPage> {
   }
 
   Future<String> fetchAndSetupAudio(String url) async {
-    final token = AuthHelper.getToken();
+    final token = AuthHelper.getActiveToken();
     final response = await http.get(
       Uri.parse(url),
       headers: {'Authorization': 'Bearer $token'},
@@ -129,7 +135,10 @@ class _BukuAlKarimPageState extends State<BukuAlKarimPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Buku Al Karim'),
+        backgroundColor: AppColors.background,
+        elevation: 0,
       ),
+      backgroundColor: AppColors.background,
       body: _isLoading
             ? Center(child: CircularProgressIndicator())
           : _pdfFile == null

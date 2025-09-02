@@ -76,67 +76,157 @@ class _GantiPasswordPageState extends State<GantiPasswordPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Ganti Password'),
+        backgroundColor: AppColors.background,
+        elevation: 0,
       ),
+      backgroundColor: AppColors.background,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              TextFormField(
-                controller: _newPasswordController,
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.lock_rounded, size: 24, color: AppColors.tertiary),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _isPasswordObscure ? Icons.visibility_rounded : Icons.visibility_off_rounded,
-                      size: 24,
-                      color: AppColors.tertiary,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _isPasswordObscure = !_isPasswordObscure;
-                      });
-                    },
-                  ),
-                  labelText: 'Password Baru',
-                  hintText: 'Masukkan password baru',
-                  border: OutlineInputBorder(),
-                ),
-                obscureText: _isPasswordObscure,
-                validator: (value) =>
-                  (value == null || value.length < 8) ? 'Password harus lebih dari 8 karakter' : null,
+              Text(
+                "Ganti Password",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                )
               ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _confirmPasswordController,
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.lock_rounded, size: 24, color: AppColors.tertiary),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _isConfirmPasswordObscure ? Icons.visibility_rounded : Icons.visibility_off_rounded,
-                      size: 24,
-                      color: AppColors.tertiary,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _isConfirmPasswordObscure = !_isConfirmPasswordObscure;
-                      });
-                    },
-                  ),
-                  labelText: 'Konfirmasi Password',
-                  hintText: 'Masukkan konfirmasi password',
-                  border: OutlineInputBorder(),
+              SizedBox(height: 8),
+              Text(
+                "Masukkan password baru dan konfirmasi untuk memperbarui akun Anda.",
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[600],
                 ),
-                obscureText: _isConfirmPasswordObscure,
-                validator: (value) =>
-                  (value == null || value.length < 8) ? 'Password harus lebih dari 8 karakter' : null,
               ),
-              const SizedBox(height: 24),
-              ElevatedButton(
+              SizedBox(height: 24),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12.withValues(alpha: 0.05),
+                      blurRadius: 10,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: TextFormField(
+                        controller: _newPasswordController,
+                        decoration: InputDecoration(
+                          isDense: true,
+                          border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300)),
+                          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300)),
+                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.tertiary, width: 2)),
+                          prefixIcon: Icon(Icons.lock_rounded, size: 24, color: AppColors.tertiary),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _isPasswordObscure ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+                              size: 24,
+                              color: AppColors.tertiary,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isPasswordObscure = !_isPasswordObscure;
+                              });
+                            },
+                          ),
+                          labelText: 'Password Baru',
+                        ),
+                        obscureText: _isPasswordObscure,
+                        validator: (value) =>
+                        (value == null || value.length < 8) ? 'Password harus lebih dari 8 karakter' : null,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 24),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12.withValues(alpha: 0.05),
+                      blurRadius: 10,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: TextFormField(
+                        controller: _confirmPasswordController,
+                        decoration: InputDecoration(
+                          isDense: true,
+                          border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300)),
+                          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300)),
+                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.tertiary, width: 2)),
+                          prefixIcon: Icon(Icons.lock_rounded, size: 24, color: AppColors.tertiary),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _isConfirmPasswordObscure ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+                              size: 24,
+                              color: AppColors.tertiary,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isConfirmPasswordObscure = !_isConfirmPasswordObscure;
+                              });
+                            },
+                          ),
+                          labelText: 'Konfirmasi Password Baru',
+                        ),
+                        obscureText: _isConfirmPasswordObscure,
+                        validator: (value) =>
+                        (value == null || value.length < 8) ? 'Password harus lebih dari 8 karakter' : null,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 24),
+              SizedBox(
+                height: 50,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.tertiary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    elevation: 0,
+                  ),
                   onPressed: _submitForm,
-                  child: const Text('Ganti Password'),
-              )
+                  child: Text(
+                    'Ganti Password',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
             ],
           )
         )

@@ -1,6 +1,6 @@
-import 'package:alkarim/cardview.dart';
+import 'package:alkarim/card_with_icon.dart';
 import 'package:alkarim/pages/beranda/mutabaah_gemaqu/mutabaah_gemaqu_page.dart';
-import 'package:alkarim/pages/beranda/mutabaah_sekolah_page.dart';
+import 'package:alkarim/pages/beranda/mutabaah_sekolah/mutabaah_sekolah_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkarim/app_colors.dart';
@@ -48,13 +48,16 @@ class _BerandaState extends State<Beranda> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_titles[_selectedIndex]),
+        backgroundColor: AppColors.background,
+        elevation: 0,
       ),
+      backgroundColor: AppColors.background,
       body: Container(
           padding: const EdgeInsets.all(16),
-          //color: Colors.white,
           child: page
       ),
       bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: AppColors.background,
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
           selectedItemColor: AppColors.primary,
@@ -84,69 +87,83 @@ class BerandaPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      //crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            IconButtonWithLabel(
-              icon: Icons.star_rounded,
-              iconColor: AppColors.secondary,
-              buttonColor: AppColors.secondary[200]!,
-              label: 'Buku \nAl Karim',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => BukuAlKarimJilidPage()),
-                );
-              },
-            ),
-            IconButtonWithLabel(
-              icon: Icons.headphones_rounded,
-              iconColor: AppColors.primary,
-              buttonColor: AppColors.primary[200]!,
-              label: 'Murottal\n',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => MurottalPage()),
-                );
-              }
-            ),
-            IconButtonWithLabel(
-              icon: Icons.anchor_rounded,
-              iconColor: AppColors.secondary,
-              buttonColor: AppColors.secondary[200]!,
-              label: 'Asmaul \nHusna',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => AsmaulHusnaPage()),
-                );
-              }
-            ),
-            IconButtonWithLabel(
-              icon: Icons.book_rounded,
-              iconColor: AppColors.primary,
-              buttonColor: AppColors.primary[200]!,
-              label: 'Doa \nBelajar',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => DoaBelajarPage()),
-                );
-              }
-            ),
-          ],
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12.withValues(alpha: 0.05),
+                blurRadius: 8,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButtonWithLabel(
+                icon: Icons.star_rounded,
+                iconColor: AppColors.secondary,
+                buttonColor: AppColors.background,
+                label: 'Buku \nAl Karim',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => BukuAlKarimJilidPage()),
+                  );
+                },
+              ),
+              IconButtonWithLabel(
+                icon: Icons.headphones_rounded,
+                iconColor: AppColors.primary,
+                buttonColor: AppColors.background,
+                label: 'Murottal\n',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => MurottalPage()),
+                  );
+                }
+              ),
+              IconButtonWithLabel(
+                icon: Icons.anchor_rounded,
+                iconColor: AppColors.secondary,
+                buttonColor: AppColors.background,
+                label: 'Asmaul \nHusna',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => AsmaulHusnaPage()),
+                  );
+                }
+              ),
+              IconButtonWithLabel(
+                icon: Icons.book_rounded,
+                iconColor: AppColors.primary,
+                buttonColor: AppColors.background,
+                label: 'Doa \nBelajar',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => DoaBelajarPage()),
+                  );
+                }
+              ),
+            ],
+          ),
         ),
         const SizedBox(height: 16),
         Row(
           children: [
             Expanded(
-              child: CardView(
+              child: CardWithIcon(
                 title: 'GemaQu',
-                description: 'Kegiatan quran mandiri',
+                description: 'Capaian kegiatan Quran mandiri',
+                icon: Icons.note_add_rounded,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -155,11 +172,12 @@ class BerandaPage extends StatelessWidget {
                 },
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 8),
             Expanded(
-              child: CardView(
+              child: CardWithIcon(
                 title: 'Mutabaah',
-                description: 'Kegiatan quran bersama ustadz/ah',
+                description: 'Capaian kegiatan Quran di sekolah',
+                icon: Icons.school_rounded,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -197,23 +215,24 @@ class IconButtonWithLabel extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          width: 60,
-          height: 60,
-          decoration: BoxDecoration(
-            color: buttonColor,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: IconButton(
-            icon: Icon(icon, size: 32, color: iconColor),
-            onPressed: onPressed,
+        GestureDetector(
+          onTap: onPressed,
+          child: Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: buttonColor,
+            ),
+            child: Icon(icon, size: 32, color: iconColor),
           ),
         ),
         const SizedBox(height: 8),
         Text(
           label,
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
           ),
           textAlign: TextAlign.center,
         )

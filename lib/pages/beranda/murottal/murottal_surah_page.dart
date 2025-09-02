@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:alkarim/api/api_service.dart';
 import 'package:alkarim/api/endpoints.dart';
+import 'package:alkarim/app_colors.dart';
 import 'package:alkarim/auth_helper.dart';
+import 'package:alkarim/item_list.dart';
 import 'package:alkarim/jilid_list.dart';
 import 'package:alkarim/models/surah_response.dart';
 import 'package:alkarim/pages/beranda/murottal/murottal_ayat_page.dart';
@@ -39,7 +41,12 @@ class _MurottalSurahPageState extends State<MurottalSurahPage> {
   }
 
   Future<SurahResponse> fetchData() async {
-    final token = AuthHelper.getToken();
+    final token = await AuthHelper.getActiveToken();
+
+    if (token == null) {
+      throw Exception('Pengguna perlu login ulang untuk melanjutkan.');
+    }
+
     final res = await api.request<SurahResponse>(
       Endpoints.murottalSurah(widget.juz),
       RequestType.GET,
@@ -50,7 +57,7 @@ class _MurottalSurahPageState extends State<MurottalSurahPage> {
   }
 
   Future<String> fetchAndSetupAudio(String url) async {
-    final token = AuthHelper.getToken();
+    final token = AuthHelper.getActiveToken();
     final response = await http.get(
       Uri.parse(url),
       headers: {'Authorization': 'Bearer $token'},
@@ -89,61 +96,62 @@ class _MurottalSurahPageState extends State<MurottalSurahPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Murottal'),
+        title: Text('Surah Murottal'),
+        backgroundColor: AppColors.background,
+        elevation: 0,
       ),
-        body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: FutureBuilder<SurahResponse>(
-            future: _future,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Gagal memuat buku Al Karim'));
-              } else if (!snapshot.hasData) {
-                return Center(child: Text('Tidak ada data buku Al Karim'));
-              }
+      backgroundColor: AppColors.background,
+      body: FutureBuilder<SurahResponse>(
+        future: _future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Gagal memuat buku Al Karim'));
+          } else if (!snapshot.hasData) {
+            return Center(child: Text('Tidak ada data buku Al Karim'));
+          }
 
-              final items = snapshot.data?.data;
-              print('Jumlah Jilid: ${items?.length}');
+          final items = snapshot.data?.data;
+          print('Jumlah Jilid: ${items?.length}');
 
-              return RefreshIndicator(
-                onRefresh: () async {
-                  setState(() {
-                    _future = fetchData();
-                  });
-                },
-                child: ListView.builder(
-                  itemCount: items?.length,
-                  itemBuilder: (context, index) {
-                    final item = items![index];
-                    return JilidList(
-                      title: item.nama,
-                      description: item.arti,
-                      onTap: () {
-                        if (widget.type == 'AYAT') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => MurottalAyatPage(id: item.id)),
-                          );
-                        } else {
-                          if (item.filePath.isNotEmpty == true) {
-                            playAudio(item.filePath, item.nama);
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Audio tidak tersedia')),
-                            );
-                          }
-                        }
-                      },
-                    );
-                  },
-                ),
-              );
+          return RefreshIndicator(
+            onRefresh: () async {
+              setState(() {
+                _future = fetchData();
+              });
             },
-          )
-        )
+            child: ListView.builder(
+              itemCount: items?.length,
+              itemBuilder: (context, index) {
+                final item = items![index];
+                return ItemList(
+                  title: item.nama,
+                  description: '${item.jumlahAyat} ayat • ${item.arti}',
+                  showArrow: widget.type == 'SURAH' ? false : true,
+                  onTap: () {
+                    if (widget.type == 'AYAT') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => MurottalAyatPage(id: item.id)),
+                      );
+                    } else {
+                      if (item.filePath?.isNotEmpty == true) {
+                        playAudio(item.filePath!, item.nama);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Audio tidak tersedia')),
+                        );
+                      }
+                    }
+                  },
+                );
+              },
+            ),
+          );
+        },
+      )
     );
   }
 }

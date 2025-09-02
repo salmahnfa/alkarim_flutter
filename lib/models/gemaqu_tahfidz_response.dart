@@ -1,27 +1,27 @@
-class GemaQuBacaJilidResponse {
+class GemaQuTahfidzResponse {
   final bool success;
   final Data data;
   final String message;
 
-  GemaQuBacaJilidResponse({
+  GemaQuTahfidzResponse({
     required this.success,
     required this.data,
     required this.message,
   });
 
-  GemaQuBacaJilidResponse.fromJson(Map<String, dynamic> json)
+  GemaQuTahfidzResponse.fromJson(Map<String, dynamic> json)
     : success = json['success'],
       data = Data.fromJson(json['data']),
       message = json['message'];
 }
 
 class Data {
-  final int qemaquBacaJilidId;
+  final int qemaquTahfidzId;
 
   Data({
-    required this.qemaquBacaJilidId,
+    required this.qemaquTahfidzId,
   });
 
   Data.fromJson(Map<String, dynamic> json)
-    : qemaquBacaJilidId = json['mutabaah_jilid_id'];
+      : qemaquTahfidzId = json['mutabaah_id'];
 }

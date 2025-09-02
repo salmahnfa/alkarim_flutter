@@ -24,9 +24,9 @@ class Data {
   final String arti;
   final String tipe;
   final int jumlahAyat;
-  final int juz;
+  final int? juz;
   final int? durasi;
-  final String filePath;
+  final String? filePath;
 
   Data({
     required this.id,

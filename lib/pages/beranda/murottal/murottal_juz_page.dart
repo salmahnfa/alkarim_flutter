@@ -1,6 +1,8 @@
 import 'package:alkarim/api/api_service.dart';
 import 'package:alkarim/api/endpoints.dart';
+import 'package:alkarim/app_colors.dart';
 import 'package:alkarim/auth_helper.dart';
+import 'package:alkarim/item_list.dart';
 import 'package:alkarim/jilid_list.dart';
 import 'package:alkarim/models/juz_response.dart';
 import 'package:alkarim/pages/beranda/murottal/murottal_surah_page.dart';
@@ -26,8 +28,12 @@ class _MurottalJuzPageState extends State<MurottalJuzPage> {
   }
 
   Future<JuzResponse> fetchData(String type) async {
-    final token = AuthHelper.getToken();
+    final token = await AuthHelper.getActiveToken();
     final endpoint = type == 'SURAH' ? Endpoints.murottalSurahJuz : Endpoints.murottalAyatJuz;
+
+    if (token == null) {
+      throw Exception('Pengguna perlu login ulang untuk melanjutkan.');
+    }
 
     final res = await api.request<JuzResponse>(
       endpoint,
@@ -42,50 +48,50 @@ class _MurottalJuzPageState extends State<MurottalJuzPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Murottal'),
+        title: Text('Juz Murottal'),
+        backgroundColor: AppColors.background,
+        elevation: 0,
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        child: FutureBuilder<JuzResponse>(
-          future: _future,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Gagal memuat buku Al Karim'));
-            } else if (!snapshot.hasData) {
-              return Center(child: Text('Tidak ada data buku Al Karim'));
-            }
-
-            final items = snapshot.data?.data;
-            print('Jumlah Juz: ${items?.length}');
-
-            return RefreshIndicator(
-              onRefresh: () async {
-                setState(() {
-                  _future = fetchData(widget.type);
-                });
-              },
-              child: ListView.builder(
-                itemCount: items?.length,
-                itemBuilder: (context, index) {
-                  final item = items![index];
-                  return JilidList(
-                    title: item.juz,
-                    description: item.surah,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => MurottalSurahPage(type: widget.type, juz: item.juz)),
-                      );
-                    },
-                  );
-                },
-              ),
-            );
+      backgroundColor: AppColors.background,
+      body: FutureBuilder<JuzResponse>(
+        future: _future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Gagal memuat buku Al Karim'));
+          } else if (!snapshot.hasData) {
+            return Center(child: Text('Tidak ada data buku Al Karim'));
           }
-        )
+
+          final items = snapshot.data?.data;
+          print('Jumlah Juz: ${items?.length}');
+
+          return RefreshIndicator(
+            onRefresh: () async {
+              setState(() {
+                _future = fetchData(widget.type);
+              });
+            },
+            child: ListView.builder(
+              itemCount: items?.length,
+              itemBuilder: (context, index) {
+                final item = items![index];
+                return ItemList(
+                  title: 'Juz ${item.juz}',
+                  description: item.surah,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => MurottalSurahPage(type: widget.type, juz: item.juz)),
+                    );
+                  },
+                );
+              },
+            ),
+          );
+        }
       )
     );
   }

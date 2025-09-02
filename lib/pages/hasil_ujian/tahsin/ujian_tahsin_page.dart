@@ -1,6 +1,8 @@
 import 'package:alkarim/api/api_service.dart';
 import 'package:alkarim/api/endpoints.dart';
+import 'package:alkarim/app_colors.dart';
 import 'package:alkarim/auth_helper.dart';
+import 'package:alkarim/item_list.dart';
 import 'package:alkarim/models/ujian_tahsin_response.dart';
 import 'package:alkarim/pages/hasil_ujian/tahsin/ujian_tahsin_detail_page.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +22,12 @@ class _UjianTahsinPageState extends State<UjianTahsinPage> {
   }
 
   Future<UjianTahsinResponse> fetchData() async {
-    final token = AuthHelper.getToken();
+    final token = await AuthHelper.getActiveToken();
+
+    if (token == null) {
+      throw Exception('Pengguna perlu login ulang untuk melanjutkan.');
+    }
+
     final res = await api.request<UjianTahsinResponse>(
       Endpoints.ujianTahsin,
       RequestType.GET,
@@ -35,7 +42,10 @@ class _UjianTahsinPageState extends State<UjianTahsinPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Detail Ujian Tahsin'),
+        backgroundColor: AppColors.background,
+        elevation: 0,
       ),
+      backgroundColor: AppColors.background,
       body: FutureBuilder(
         future: _future,
         builder: (context, snapshot) {
@@ -47,7 +57,7 @@ class _UjianTahsinPageState extends State<UjianTahsinPage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Gagal memuat profil siswa'));
+            return Center(child: Text('Gagal memuat nilai siswa'));
           } else if (!snapshot.hasData) {
             return Center(child: Text('Tidak ada data siswa'));
           }
@@ -67,9 +77,9 @@ class _UjianTahsinPageState extends State<UjianTahsinPage> {
             child: Column(
               children: [
                 if (items.nilaiPtsGasal != null)
-                  ListTile(
-                    title: Text('Nilai PTS Gasal'),
-                      subtitle: Text('Hasil penilaian tengah semester gasal'),
+                  ItemList(
+                    title: 'Nilai PTS Gasal',
+                    description: 'Hasil penilaian tengah semester gasal',
                     onTap: () {
                       Navigator.push(
                         context,
@@ -78,9 +88,9 @@ class _UjianTahsinPageState extends State<UjianTahsinPage> {
                     }
                   ),
                 if (items.nilaiPasGasal != null)
-                  ListTile(
-                    title: Text('Nilai PAS Gasal'),
-                    subtitle: Text('Hasil penilaian akhir semester gasal'),
+                  ItemList(
+                    title: 'Nilai PAS Gasal',
+                    description: 'Hasil penilaian akhir semester gasal',
                     onTap: () {
                       Navigator.push(
                         context,
@@ -89,9 +99,9 @@ class _UjianTahsinPageState extends State<UjianTahsinPage> {
                     }
                   ),
                 if (items.nilaiPtsGenap != null)
-                  ListTile(
-                      title: Text('Nilai PTS Genap'),
-                      subtitle: Text('Hasil penilaian tengah semester genap'),
+                  ItemList(
+                      title: 'Nilai PTS Genap',
+                      description: 'Hasil penilaian tengah semester genap',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -100,9 +110,9 @@ class _UjianTahsinPageState extends State<UjianTahsinPage> {
                       }
                   ),
                 if (items.nilaiPasGenap != null)
-                  ListTile(
-                      title: Text('Nilai PAS Genap'),
-                      subtitle: Text('Hasil penilaian akhir semester genap'),
+                  ItemList(
+                      title: 'Nilai PAS Genap',
+                      description: 'Hasil penilaian akhir semester genap',
                       onTap: () {
                         Navigator.push(
                           context,

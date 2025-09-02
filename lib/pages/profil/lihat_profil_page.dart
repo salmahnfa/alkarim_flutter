@@ -1,4 +1,6 @@
 import 'package:alkarim/api/endpoints.dart';
+import 'package:alkarim/app_colors.dart';
+import 'package:alkarim/info_row.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkarim/api/api_service.dart';
@@ -20,7 +22,12 @@ class _LihatProfilPageState extends State<LihatProfilPage> {
   }
 
   Future<SiswaProfilResponse> fetchData() async {
-    final token = AuthHelper.getToken();
+    final token = await AuthHelper.getActiveToken();
+
+    if (token == null) {
+      throw Exception('Pengguna perlu login ulang untuk melanjutkan.');
+    }
+
     final res = await api.request<SiswaProfilResponse>(
       Endpoints.profil,
       RequestType.GET,
@@ -35,7 +42,10 @@ class _LihatProfilPageState extends State<LihatProfilPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Profil Siswa'),
+        backgroundColor: AppColors.background,
+        elevation: 0,
       ),
+      backgroundColor: AppColors.background,
       body: FutureBuilder<SiswaProfilResponse>(
         future: _future,
         builder: (context, snapshot) {
@@ -55,21 +65,76 @@ class _LihatProfilPageState extends State<LihatProfilPage> {
                 _future = fetchData();
               });
             },
-            child: ListView(
+            child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
-              children: [
-                Text('Nama \n${data.nama}'),
-                SizedBox(height: 8),
-                Text('Email \n${data.email}'),
-                SizedBox(height: 8),
-                Text('NIS \n${data.nis}'),
-                SizedBox(height: 8),
-                Text('Unit \n${data.unit}'),
-                SizedBox(height: 8),
-                Text('Kelas \n${data.kelas}'),
-                SizedBox(height: 8),
-                Text('Guru Quran \n${data.guruQuran}'),
-              ],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Informasi Akun',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 12),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12.withValues(alpha: 0.05),
+                          blurRadius: 8,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        infoRow('Nama', data.nama),
+                        infoRow('Email', data.email, isLast: true),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  Text(
+                    'Data Siswa',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 12),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12.withValues(alpha: 0.05),
+                          blurRadius: 8,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        infoRow('NIS', data.nis),
+                        infoRow('Unit', data.unit),
+                        infoRow('Kelas', data.kelas),
+                        infoRow('Guru Quran', data.guruQuran, isLast: true),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },

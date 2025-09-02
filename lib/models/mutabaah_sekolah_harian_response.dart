@@ -104,7 +104,9 @@ class BacaJilid {
       isWarning = json['is_warning'],
       kehadiran = json['kehadiran'],
       text = json['text'],
-      id = json['id'];
+      id = json['id'] is int
+          ? json['id']
+          : int.tryParse(json['id']?.toString() ?? '');
 }
 
 class Tahfidz {
@@ -130,7 +132,9 @@ class Tahfidz {
       isWarning = json['is_warning'],
       kehadiran = json['kehadiran'],
       text = json['text'],
-      id = json['id'];
+      id = json['id'] is int
+          ? json['id']
+          : int.tryParse(json['id']?.toString() ?? '');
 }
 
 class Murojaah {
@@ -156,7 +160,9 @@ class Murojaah {
       isWarning = json['is_warning'],
       kehadiran = json['kehadiran'],
       text = json['text'],
-      id = json['id'];
+      id = json['id'] is int
+          ? json['id']
+          : int.tryParse(json['id']?.toString() ?? '');
 }
 
 class BacaQuran {
@@ -182,7 +188,9 @@ class BacaQuran {
       isWarning = json['is_warning'],
       kehadiran = json['kehadiran'],
       text = json['text'],
-      id = json['id'];
+      id = json['id'] is int
+          ? json['id']
+          : int.tryParse(json['id']?.toString() ?? '');
 }
 
 class Talaqqi {
@@ -208,5 +216,7 @@ class Talaqqi {
       isWarning = json['is_warning'],
       kehadiran = json['kehadiran'],
       text = json['text'],
-      id = json['id'];
+      id = json['id'] is int
+          ? json['id']
+          : int.tryParse(json['id']?.toString() ?? '');
 }

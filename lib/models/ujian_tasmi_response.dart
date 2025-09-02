@@ -58,10 +58,12 @@ class DataList {
   final int guruQuranId;
   final int pengujiId;
   final Penguji penguji;
-  final int jumlah_juz;
+  final int jumlahJuz;
   final String juz;
-  final String nilai;
+  final int nilai;
+  final String nilaiDesimal;
   final String nilaiHuruf;
+  final String? predikat;
   final String? catatan;
   final int lulus;
 
@@ -71,10 +73,12 @@ class DataList {
     required this.guruQuranId,
     required this.pengujiId,
     required this.penguji,
-    required this.jumlah_juz,
+    required this.jumlahJuz,
     required this.juz,
     required this.nilai,
+    required this.nilaiDesimal,
     required this.nilaiHuruf,
+    required this.predikat,
     required this.catatan,
     required this.lulus,
   });
@@ -85,10 +89,12 @@ class DataList {
         guruQuranId = json['guru_quran_id'],
         pengujiId = json['penguji_id'],
         penguji = Penguji.fromJson(json['penyimak']),
-        jumlah_juz = json['jumlah_juz'],
+        jumlahJuz = json['jumlah_juz'],
         juz = json['juz'],
         nilai = json['nilai'],
+        nilaiDesimal = json['nilai_decimal'],
         nilaiHuruf = json['nilai_huruf'],
+        predikat = json['predikat'],
         catatan = json['catatan'],
         lulus = json['lulus'];
 }
@@ -120,8 +126,8 @@ class User {
   });
 
   User.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        nama = json['nama'];
+    : id = json['id'],
+      nama = json['nama'];
 }
 
 class TahsinLevel {
@@ -134,6 +140,6 @@ class TahsinLevel {
   });
 
   TahsinLevel.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        nama = json['nama'];
+    : id = json['id'],
+      nama = json['nama'];
 }

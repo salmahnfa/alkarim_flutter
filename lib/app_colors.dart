@@ -5,6 +5,7 @@ class AppColors {
   static final MaterialColor secondary = MaterialColor(0xFFFBC800, secondaryShades);
   static const Color tertiary = Color(0xFF4B4B4B);
   static const Color textPrimary = Color(0xFF4B4B4B);
+  static const Color background = Color(0xFFF5F6FA);
 }
 
 Map<int, Color> primaryShades = {

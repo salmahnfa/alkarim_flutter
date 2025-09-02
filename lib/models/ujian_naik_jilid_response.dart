@@ -59,7 +59,8 @@ class DataList {
   final int pengujiId;
   final Penguji penguji;
   final int tahsinLevelId;
-  final String nilai;
+  final int nilai;
+  final String nilaiDesimal;
   final String nilaiHuruf;
   final String? catatan;
   final int lulus;
@@ -73,6 +74,7 @@ class DataList {
     required this.penguji,
     required this.tahsinLevelId,
     required this.nilai,
+    required this.nilaiDesimal,
     required this.nilaiHuruf,
     required this.catatan,
     required this.lulus,
@@ -87,6 +89,7 @@ class DataList {
     penguji = Penguji.fromJson(json['penguji']),
     tahsinLevelId = json['tahsin_level_id'],
     nilai = json['nilai'],
+    nilaiDesimal = json['nilai_decimal'],
     nilaiHuruf = json['nilai_huruf'],
     catatan = json['catatan'],
     lulus = json['lulus'],

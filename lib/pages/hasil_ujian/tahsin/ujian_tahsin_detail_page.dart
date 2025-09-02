@@ -1,6 +1,8 @@
 import 'package:alkarim/api/api_service.dart';
 import 'package:alkarim/api/endpoints.dart';
+import 'package:alkarim/app_colors.dart';
 import 'package:alkarim/auth_helper.dart';
+import 'package:alkarim/info_row.dart';
 import 'package:alkarim/models/ujian_tahsin_detail_response.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +25,12 @@ class _UjianTahsinDetailPageState extends State<UjianTahsinDetailPage> {
   }
 
   Future<UjianTahsinDetailResponse> fetchData() async {
-    final token = AuthHelper.getToken();
+    final token = await AuthHelper.getActiveToken();
+
+    if (token == null) {
+      throw Exception('Pengguna perlu login ulang untuk melanjutkan.');
+    }
+
     final res = await api.request<UjianTahsinDetailResponse>(
       Endpoints.ujianTahsinDetail(widget.id),
       RequestType.GET,
@@ -38,7 +45,10 @@ class _UjianTahsinDetailPageState extends State<UjianTahsinDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Detail Ujian Tahsin'),
+        backgroundColor: AppColors.background,
+        elevation: 0,
       ),
+      backgroundColor: AppColors.background,
       body: FutureBuilder(
         future: _future,
         builder: (context, snapshot) {
@@ -50,9 +60,9 @@ class _UjianTahsinDetailPageState extends State<UjianTahsinDetailPage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Gagal memuat nilai ujian siswa'));
+            return Center(child: Text('Gagal memuat nilai siswa'));
           } else if (!snapshot.hasData) {
-            return Center(child: Text('Tidak ada data nilai ujian siswa'));
+            return Center(child: Text('Tidak ada data siswa'));
           }
 
           final item = snapshot.data?.data;
@@ -67,19 +77,79 @@ class _UjianTahsinDetailPageState extends State<UjianTahsinDetailPage> {
                 _future = fetchData();
               });
             },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Tahun Ajaran: ${item.tahunAjaran}'),
-                Text('Semester: ${item.semester}'),
-                Text('Tipe Ujian: ${item.tipeUjian}'),
-                Text('Kelancaran: ${item.kelancaran}'),
-                Text('Makhroj: ${item.makhroj}'),
-                Text('Tajwid: ${item.tajwid}'),
-                Text('Status: ${item.lulus == 1 ? 'Lulus' : 'Tidak Lulus'}'),
-                Text('Penguji: ${item.penguji.user.nama}'),
-                Text('Catatan: ${item.catatan ?? 'Tidak ada catatan'}')
-              ]
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Informasi Ujian',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 12),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12.withValues(alpha: 0.05),
+                          blurRadius: 8,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        infoRow('Tanggal', item.tahunAjaran),
+                        infoRow('Semester', item.semester == 'GASAL' ? 'Gasal' : 'Genap'),
+                        infoRow('Tipe Ujian', item.tipeUjian == 'TENGAH_SEMESTER' ? 'Tengah Semester' : 'Akhir Semester'),
+                        infoRow('Kelancaran', item.kelancaran.toString()),
+                        infoRow('Makhroj', item.makhroj.toString()),
+                        infoRow('Tajwid', item.tajwid.toString()),
+                        infoRow('Status', item.lulus == 1 ? 'Lulus' : 'Tidak Lulus', isLast: true),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  Text(
+                    'Catatan Penguji',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 12),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12.withValues(alpha: 0.05),
+                          blurRadius: 8,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        infoRow('Guru Quran', item.penguji.user.nama),
+                        infoRow('Catatan', item.catatan ?? 'Tidak ada catatan', isLast: true),
+                      ],
+                    ),
+                  ),
+                ]
+              ),
             )
           );
         }

@@ -43,7 +43,13 @@ class _LoginPageState extends State<LoginPage> {
           fromJson: (json) => LoginResponse.fromJson(json),
         );
 
-        await AuthHelper.saveLoginData(res);
+        final siswa = res.data.siswa;
+        final token = res.data.token;
+
+        await AuthHelper.saveToken(res.data.siswa.siswaId, res.data.token);
+        await AuthHelper.saveUserData(res.data.siswa.siswaId, res.data.siswa.nama, res.data.siswa.email, res.data.siswa.program, res.data.siswa.isAsrama);
+
+        await AuthHelper.setActiveAccount(siswa.siswaId);
 
         if (!mounted) return;
         Navigator.pushReplacement(
@@ -65,55 +71,127 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login Page'),
+        backgroundColor: AppColors.background,
+        elevation: 0,
       ),
+      backgroundColor: AppColors.background,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.email_rounded, size: 24, color: AppColors.tertiary),
-                  labelText: 'Email',
-                  hintText: 'Masukkan email',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) =>
-                  (value == null || !value.contains('@')) ? 'Email tidak valid' : null,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.lock_rounded, size: 24, color: AppColors.tertiary),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _isObscure ? Icons.visibility_rounded : Icons.visibility_off_rounded,
-                      size: 24,
-                      color: AppColors.tertiary,
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    //Image.asset('assets/images/logo_no_background.png', height: 100),
+                    //SizedBox(height: 32),
+                    Text(
+                        "Selamat datang!",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        )
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _isObscure = !_isObscure;
-                      });
-                    },
-                  ),
-                  labelText: 'Password',
-                  hintText: 'Masukkan password',
-                  border: OutlineInputBorder(),
+                    SizedBox(height: 8),
+                    Text(
+                      "Silakan masukkan email dan password untuk mengakses aplikasi.",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  ]
+                )
+              ),
+              SizedBox(height: 24),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12.withValues(alpha: 0.05),
+                      blurRadius: 8,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
                 ),
-                obscureText: _isObscure,
-                validator: (value) =>
-                  (value == null || value.length < 8) ? 'Password harus lebih dari 8 karakter' : null,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.email_rounded, size: 24, color: AppColors.tertiary),
+                        labelText: 'Email',
+                        hintText: 'Masukkan email',
+                        isDense: true,
+                        border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300)),
+                        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300)),
+                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.tertiary, width: 2)),
+                      ),
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) =>
+                        (value == null || !value.contains('@')) ? 'Email tidak valid' : null,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _passwordController,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.lock_rounded, size: 24, color: AppColors.tertiary),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isObscure ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+                            size: 24,
+                            color: AppColors.tertiary,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isObscure = !_isObscure;
+                            });
+                          },
+                        ),
+                        labelText: 'Password',
+                        hintText: 'Masukkan password',
+                        isDense: true,
+                        border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300)),
+                        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300)),
+                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.tertiary, width: 2)),
+                      ),
+                      obscureText: _isObscure,
+                      validator: (value) =>
+                      (value == null || value.length < 8) ? 'Password harus lebih dari 8 karakter' : null,
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 24),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.tertiary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  elevation: 0,
+                ),
                 onPressed: _submitForm,
-                child: const Text('Masuk'),
+                child: Padding(
+                  padding: const EdgeInsets.all(14),
+                  child: Text(
+                    'Masuk',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.background,
+                    ),
+                  ),
+                ),
               )
             ],
           )
@@ -124,5 +202,8 @@ class _LoginPageState extends State<LoginPage> {
 }
 
 SnackBar selfSnackbar(String msg) {
-  return SnackBar(content: Text(msg));
+  return SnackBar(
+    content: Text(msg),
+    duration: Duration(seconds: 1),
+  );
 }

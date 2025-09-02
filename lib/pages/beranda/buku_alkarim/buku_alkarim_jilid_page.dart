@@ -1,5 +1,6 @@
 import 'package:alkarim/api/endpoints.dart';
-import 'package:alkarim/jilid_list.dart';
+import 'package:alkarim/app_colors.dart';
+import 'package:alkarim/item_list.dart';
 import 'package:alkarim/pages/beranda/buku_alkarim/buku_alkarim_page.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +23,12 @@ class _BukuAlKarimJilidPageState extends State<BukuAlKarimJilidPage> {
   }
 
   Future<BukuAlKarimJilidResponse> fetchData() async {
-    final token = AuthHelper.getToken();
+    final token = await AuthHelper.getActiveToken();
+
+    if (token == null) {
+      throw Exception('Pengguna perlu login ulang untuk melanjutkan.');
+    }
+
     final res = await api.request<BukuAlKarimJilidResponse>(
       Endpoints.bukuAlKarimJilid,
       RequestType.GET,
@@ -37,49 +43,49 @@ class _BukuAlKarimJilidPageState extends State<BukuAlKarimJilidPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Buku Al Karim'),
+        backgroundColor: AppColors.background,
+        elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: FutureBuilder<BukuAlKarimJilidResponse>(
-          future: _future,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Gagal memuat buku Al Karim'));
-            } else if (!snapshot.hasData) {
-              return Center(child: Text('Tidak ada data buku Al Karim'));
-            }
+      backgroundColor: AppColors.background,
+      body: FutureBuilder<BukuAlKarimJilidResponse>(
+        future: _future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Gagal memuat buku Al Karim'));
+          } else if (!snapshot.hasData) {
+            return Center(child: Text('Tidak ada data buku Al Karim'));
+          }
 
-            final items = snapshot.data?.data;
-            print('Jumlah Jilid: ${items?.length}');
+          final items = snapshot.data?.data;
+          print('Jumlah Jilid: ${items?.length}');
 
-            return RefreshIndicator(
-              onRefresh: () async {
-                setState(() {
-                  _future = fetchData();
-                });
+          return RefreshIndicator(
+            onRefresh: () async {
+              setState(() {
+                _future = fetchData();
+              });
+            },
+            child: ListView.builder(
+              itemCount: items?.length,
+              itemBuilder: (context, index) {
+                final item = items![index];
+                return ItemList(
+                  title: item.nama,
+                  description: item.deskripsi,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => BukuAlKarimPage(id: item.id)),
+                    );
+                  },
+                );
               },
-              child: ListView.builder(
-                itemCount: items?.length,
-                itemBuilder: (context, index) {
-                  final item = items![index];
-                  return JilidList(
-                    title: item.nama,
-                    description: item.deskripsi,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => BukuAlKarimPage(id: item.id)),
-                      );
-                    },
-                  );
-                },
-              ),
-            );
-          },
-        )
+            ),
+          );
+        },
       )
     );
   }

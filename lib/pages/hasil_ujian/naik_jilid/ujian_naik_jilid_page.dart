@@ -1,5 +1,6 @@
 import 'package:alkarim/api/endpoints.dart';
-import 'package:alkarim/jilid_list.dart';
+import 'package:alkarim/app_colors.dart';
+import 'package:alkarim/item_list.dart';
 import 'package:alkarim/models/ujian_naik_jilid_response.dart';
 import 'package:alkarim/pages/hasil_ujian/naik_jilid/ujian_naik_jilid_detail_page.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,12 @@ class _UjianNaikJilidPageState extends State<UjianNaikJilidPage> {
   }
 
   Future<UjianNaikJilidResponse> fetchData() async {
-    final token = AuthHelper.getToken();
+    final token = await AuthHelper.getActiveToken();
+
+    if (token == null) {
+      throw Exception('Pengguna perlu login ulang untuk melanjutkan.');
+    }
+
     final res = await api.request<UjianNaikJilidResponse>(
       Endpoints.ujianNaikJilid,
       RequestType.GET,
@@ -37,7 +43,10 @@ class _UjianNaikJilidPageState extends State<UjianNaikJilidPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Ujian Naik Jilid'),
+        backgroundColor: AppColors.background,
+        elevation: 0,
       ),
+      backgroundColor: AppColors.background,
       body: FutureBuilder(
         future: _future,
         builder: (context, snapshot) {
@@ -49,7 +58,7 @@ class _UjianNaikJilidPageState extends State<UjianNaikJilidPage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Gagal memuat profil siswa'));
+            return Center(child: Text('Gagal memuat nilai siswa'));
           } else if (!snapshot.hasData) {
             return Center(child: Text('Tidak ada data siswa'));
           }
@@ -71,9 +80,9 @@ class _UjianNaikJilidPageState extends State<UjianNaikJilidPage> {
               itemCount: items.length,
               itemBuilder: (context, index) {
                 final item = items[index];
-                return JilidList(
-                  title: item.tanggalUjian,
-                  description: item.tahsinLevel.nama,
+                return ItemList(
+                  title: item.tahsinLevel.nama,
+                  description: item.tanggalUjian,
                   onTap: () {
                     Navigator.push(
                       context,

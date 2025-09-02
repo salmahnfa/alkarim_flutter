@@ -39,12 +39,16 @@ class MyApp extends StatelessWidget {
         home: FutureBuilder<bool>(
           future: AuthHelper.isLoggedIn(),
           builder: (context, snapshot) {
-            if (snapshot.hasData && snapshot.data!) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
+            } else if (snapshot.hasData && snapshot.data!) {
               return Beranda();
             } else {
               return LoginPage();
             }
-          }
+          },
         ),
       ),
     );

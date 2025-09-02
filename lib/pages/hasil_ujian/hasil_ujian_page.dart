@@ -1,4 +1,3 @@
-import 'package:alkarim/cardview.dart';
 import 'package:alkarim/card_with_icon.dart';
 import 'package:alkarim/pages/hasil_ujian/naik_jilid/ujian_naik_jilid_page.dart';
 import 'package:alkarim/pages/hasil_ujian/tahfidz/ujian_tahfidz_page.dart';

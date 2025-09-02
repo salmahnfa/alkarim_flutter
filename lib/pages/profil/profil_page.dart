@@ -7,7 +7,6 @@ import 'package:alkarim/pages/profil/ganti_password_page.dart';
 
 import '../../account_list.dart';
 import '../../app_colors.dart';
-import '../../item_list.dart';
 import '../beranda/beranda_page.dart';
 
 class ProfilPage extends StatefulWidget {

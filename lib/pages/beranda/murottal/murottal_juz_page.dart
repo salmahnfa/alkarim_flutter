@@ -3,7 +3,6 @@ import 'package:alkarim/api/endpoints.dart';
 import 'package:alkarim/app_colors.dart';
 import 'package:alkarim/auth_helper.dart';
 import 'package:alkarim/item_list.dart';
-import 'package:alkarim/jilid_list.dart';
 import 'package:alkarim/models/juz_response.dart';
 import 'package:alkarim/pages/beranda/murottal/murottal_surah_page.dart';
 import 'package:flutter/material.dart';

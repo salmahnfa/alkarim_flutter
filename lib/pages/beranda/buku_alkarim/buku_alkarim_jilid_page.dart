@@ -1,7 +1,6 @@
 import 'package:alkarim/api/endpoints.dart';
 import 'package:alkarim/app_colors.dart';
 import 'package:alkarim/item_list.dart';
-import 'package:alkarim/jilid_list.dart';
 import 'package:alkarim/pages/beranda/buku_alkarim/buku_alkarim_page.dart';
 import 'package:flutter/material.dart';
 

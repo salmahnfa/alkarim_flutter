@@ -26,7 +26,7 @@ class AuthHelper {
   }
 
   static Future<String?> getActiveToken() async {
-    final siswaId = await getActiveSiswaId();
+    final siswaId = getActiveSiswaId();
     if (siswaId == null) return null;
 
     return await getToken(siswaId);
@@ -78,7 +78,7 @@ class AuthHelper {
   }
 
   static Future<void> logout() async {
-    final activeId = await getActiveSiswaId();
+    final activeId = getActiveSiswaId();
     if (activeId != null) {
       await clearToken(activeId);
       await _prefs.remove('activeIdKey');
@@ -89,7 +89,7 @@ class AuthHelper {
     await clearToken(siswaId);
     await _prefs.remove('user_$siswaId');
 
-    final activeId = await getActiveSiswaId();
+    final activeId = getActiveSiswaId();
     if (activeId == siswaId) {
       await _prefs.remove('activeIdKey');
     }

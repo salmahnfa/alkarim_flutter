@@ -5,6 +5,7 @@ import 'package:alkarim/auth_helper.dart';
 import 'package:alkarim/info_row.dart';
 import 'package:alkarim/models/ujian_tahsin_detail_response.dart';
 import 'package:flutter/material.dart';
+import 'package:alkarim/utils/string_extensions.dart';
 
 class UjianTahsinDetailPage extends StatefulWidget {
   final dynamic id;
@@ -107,12 +108,10 @@ class _UjianTahsinDetailPageState extends State<UjianTahsinDetailPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        infoRow('Tanggal', item.tahunAjaran),
-                        infoRow('Semester', item.semester == 'GASAL' ? 'Gasal' : 'Genap'),
-                        infoRow('Tipe Ujian', item.tipeUjian == 'TENGAH_SEMESTER' ? 'Tengah Semester' : 'Akhir Semester'),
-                        infoRow('Kelancaran', item.kelancaran.toString()),
-                        infoRow('Makhroj', item.makhroj.toString()),
-                        infoRow('Tajwid', item.tajwid.toString()),
+                        infoRow('Tahun Ajaran', item.tahunAjaran),
+                        infoRow('Semester', item.semester.capitalizeWords),
+                        infoRow('Jenis Ujian', item.tipeUjian.capitalizeWords),
+                        infoRow('Nilai', item.nilai.toString()),
                         infoRow('Status', item.lulus == 1 ? 'Lulus' : 'Tidak Lulus', isLast: true),
                       ],
                     ),
@@ -143,7 +142,7 @@ class _UjianTahsinDetailPageState extends State<UjianTahsinDetailPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        infoRow('Guru Quran', item.penguji.user.nama),
+                        infoRow('Guru Quran', item.guruQuran.user.nama),
                         infoRow('Catatan', item.catatan ?? 'Tidak ada catatan', isLast: true),
                       ],
                     ),

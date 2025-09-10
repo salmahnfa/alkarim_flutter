@@ -42,7 +42,7 @@ class _ProfilPageState extends State<ProfilPage> {
 
   Future<void> _loadAccounts() async {
     final accounts = await AuthHelper.getAllAccounts();
-    final activeId = await AuthHelper.getActiveSiswaId();
+    final activeId = AuthHelper.getActiveSiswaId();
 
     setState(() {
       _accounts = accounts;
@@ -118,16 +118,15 @@ class _ProfilPageState extends State<ProfilPage> {
                       onPressed: () async {
                         await AuthHelper.logout();
 
-                        Navigator.pushAndRemoveUntil(
+                        Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => LoginPage()),
-                              (route) => false,
+                          MaterialPageRoute(builder: (context) => LoginPage()),
                         );
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(14),
                         child: Text(
-                          'Masuk',
+                          'Tambah Akun',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -250,7 +249,7 @@ class _ProfilPageState extends State<ProfilPage> {
                           TextButton(
                             child: Text('Keluar'),
                             onPressed: () async {
-                              final siswaId = await AuthHelper.getActiveSiswaId();
+                              final siswaId = AuthHelper.getActiveSiswaId();
                               await AuthHelper.deleteAccount(siswaId!);
 
                               final accounts = await AuthHelper.getAllAccounts();

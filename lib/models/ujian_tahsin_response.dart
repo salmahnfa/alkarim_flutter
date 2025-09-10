@@ -52,7 +52,6 @@ class NilaiPtsGasal {
   final String semester;
   final String tipeUjian;
   final int guruQuranId;
-  final int pengujiId;
 
   NilaiPtsGasal({
     required this.id,
@@ -60,7 +59,6 @@ class NilaiPtsGasal {
     required this.semester,
     required this.tipeUjian,
     required this.guruQuranId,
-    required this.pengujiId,
   });
 
   NilaiPtsGasal.fromJson(Map<String, dynamic> json)
@@ -68,8 +66,7 @@ class NilaiPtsGasal {
     tahunAjaran = json['tahun_ajaran'],
     semester = json['semester'],
     tipeUjian = json['tipe_ujian'],
-    guruQuranId = json['guru_quran_id'],
-    pengujiId = json['penguji_id'];
+    guruQuranId = json['guru_quran_id'];
 }
 
 class NilaiPasGasal {
@@ -78,7 +75,6 @@ class NilaiPasGasal {
   final String semester;
   final String tipeUjian;
   final int guruQuranId;
-  final int pengujiId;
 
   NilaiPasGasal({
     required this.id,
@@ -86,7 +82,6 @@ class NilaiPasGasal {
     required this.semester,
     required this.tipeUjian,
     required this.guruQuranId,
-    required this.pengujiId,
   });
 
   NilaiPasGasal.fromJson(Map<String, dynamic> json)
@@ -94,8 +89,7 @@ class NilaiPasGasal {
     tahunAjaran = json['tahun_ajaran'],
     semester = json['semester'],
     tipeUjian = json['tipe_ujian'],
-    guruQuranId = json['guru_quran_id'],
-    pengujiId = json['penguji_id'];
+    guruQuranId = json['guru_quran_id'];
 }
 
 class NilaiPtsGenap {
@@ -104,7 +98,6 @@ class NilaiPtsGenap {
   final String semester;
   final String tipeUjian;
   final int guruQuranId;
-  final int pengujiId;
 
   NilaiPtsGenap({
     required this.id,
@@ -112,7 +105,6 @@ class NilaiPtsGenap {
     required this.semester,
     required this.tipeUjian,
     required this.guruQuranId,
-    required this.pengujiId,
   });
 
   NilaiPtsGenap.fromJson(Map<String, dynamic> json)
@@ -120,8 +112,7 @@ class NilaiPtsGenap {
     tahunAjaran = json['tahun_ajaran'],
     semester = json['semester'],
     tipeUjian = json['tipe_ujian'],
-    guruQuranId = json['guru_quran_id'],
-    pengujiId = json['penguji_id'];
+    guruQuranId = json['guru_quran_id'];
 }
 
 class NilaiPasGenap {
@@ -130,7 +121,6 @@ class NilaiPasGenap {
   final String semester;
   final String tipeUjian;
   final int guruQuranId;
-  final int pengujiId;
 
   NilaiPasGenap({
     required this.id,
@@ -138,7 +128,6 @@ class NilaiPasGenap {
     required this.semester,
     required this.tipeUjian,
     required this.guruQuranId,
-    required this.pengujiId,
   });
 
   NilaiPasGenap.fromJson(Map<String, dynamic> json)
@@ -146,6 +135,5 @@ class NilaiPasGenap {
     tahunAjaran = json['tahun_ajaran'],
     semester = json['semester'],
     tipeUjian = json['tipe_ujian'],
-    guruQuranId = json['guru_quran_id'],
-    pengujiId = json['penguji_id'];
+    guruQuranId = json['guru_quran_id'];
 }

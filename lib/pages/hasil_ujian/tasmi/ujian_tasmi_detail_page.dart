@@ -60,7 +60,10 @@ class _UjianTasmiDetailPageState extends State<UjianTasmiDetailPage> {
                       infoRow('Nilai', widget.item.nilaiDesimal),
                     ],
 
-                    infoRow('Predikat', widget.item.nilaiHuruf),
+                    if (widget.item.predikat != null) ...[
+                      infoRow('Predikat', capitalizeWords(widget.item.predikat)),
+                    ],
+
                     infoRow('Status', widget.item.lulus == 1 ? 'Lulus' : 'Tidak Lulus', isLast: true),
                   ],
                 ),
@@ -101,4 +104,14 @@ class _UjianTasmiDetailPageState extends State<UjianTasmiDetailPage> {
         )
     );
   }
+}
+
+String capitalizeWords(String text) {
+  return text
+      .replaceAll('_', ' ')
+      .split(' ')
+      .map((word) => word.isNotEmpty
+      ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}'
+      : '')
+      .join(' ');
 }

@@ -81,7 +81,7 @@ class _UjianTahfidzPageState extends State<UjianTahfidzPage> {
                     itemBuilder: (context, index) {
                       final item = items[index];
                       return ItemList(
-                          title: 'Juz ${item.juz}',
+                          title: '${item.title}',
                           onTap: () {
                             Navigator.push(
                               context,

@@ -10,6 +10,9 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../models/gemaqu_baca_jilid_reponse.dart';
+import '../../../utils/validators.dart';
+
 class GemaQuBacaJilidFormPage extends StatefulWidget {
   final bool isNotEmpty;
   final DateTime selectedDay;
@@ -21,7 +24,7 @@ class GemaQuBacaJilidFormPage extends StatefulWidget {
 }
 
 class _GemaQuBacaJilidPageState extends State<GemaQuBacaJilidFormPage> {
-  late Future<BukuAlKarimJilidResponse> _future;
+  late Future<GemaQuBacaJilidData> _future;
   final _formKey = GlobalKey<FormState>();
   final _halamanMulaiController = TextEditingController();
   final _halamanSelesaiController = TextEditingController();
@@ -30,13 +33,7 @@ class _GemaQuBacaJilidPageState extends State<GemaQuBacaJilidFormPage> {
   @override
   void initState() {
     super.initState();
-    if (widget.isNotEmpty == true) {
-      _halamanMulaiController.text = '9';
-      _halamanSelesaiController.text = '10';
-    }
-
-    _future = fetchJilidData();
-    print(DropdownButtonFormField2);
+    _future = fetchData();
   }
 
   @override
@@ -63,7 +60,7 @@ class _GemaQuBacaJilidPageState extends State<GemaQuBacaJilidFormPage> {
       } else {
         try {
           await api.request<GemaQuBacaJilidSaveResponse>(
-            Endpoints.mutabaahGemaQuBacaJilid,
+            Endpoints.mutabaahGemaQuBacaJilidSave,
             RequestType.POST,
             token: await AuthHelper.getActiveToken(),
             body: {
@@ -88,60 +85,85 @@ class _GemaQuBacaJilidPageState extends State<GemaQuBacaJilidFormPage> {
     }
   }
 
-  Future<BukuAlKarimJilidResponse> fetchJilidData() async {
+  Future<GemaQuBacaJilidData> fetchData() async {
     final token = await AuthHelper.getActiveToken();
-    final res = await api.request<BukuAlKarimJilidResponse>(
+    final tanggal = DateFormat('yyyy-MM-dd').format(widget.selectedDay);
+
+    final jilidList = await api.request<BukuAlKarimJilidResponse>(
       Endpoints.bukuAlKarimJilid,
       RequestType.GET,
       token: token,
       fromJson: (json) => BukuAlKarimJilidResponse.fromJson(json),
     );
-    return res;
+
+    final gemaQuBacaJilid = await api.request<GemaQuBacaJilidResponse>(
+      Endpoints.mutabaahGemaQuBacaJilid(tanggal),
+      RequestType.GET,
+      token: token,
+      fromJson: (json) => GemaQuBacaJilidResponse.fromJson(json),
+    );
+
+    return GemaQuBacaJilidData(gemaQuBacaJilid, jilidList);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        title: Text('Baca Jilid'),
         backgroundColor: AppColors.background,
         elevation: 0,
       ),
       backgroundColor: AppColors.background,
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12.withValues(alpha: 0.05),
-                      blurRadius: 8,
-                      offset: Offset(0, 4),
+      body: FutureBuilder(
+        future: _future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            print(snapshot.error);
+            return const Center(child: Text('Gagal memuat data jilid Al Karim'));
+          }
+
+          final items = snapshot.data?.jilidList.data;
+          final details = snapshot.data?.gemaQuBacaJilid.data;
+
+          if (items == null || items.isEmpty) {
+            return const Center(child: Text('Tidak ada data jilid Al Karim'));
+          }
+
+          if (details!.status) {
+            _selectedValue = details.bukuAlKarimId.toString();
+            _halamanMulaiController.text = details.halamanMulai.toString();
+            _halamanSelesaiController.text = details.halamanSelesai.toString();
+          }
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12.withValues(alpha: 0.05),
+                          blurRadius: 8,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    FutureBuilder<BukuAlKarimJilidResponse>(
-                      future: _future,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return Center(child: Text('Gagal memuat data jilid Al Karim'));
-                        } else if (!snapshot.hasData) {
-                          return Center(child: Text('Tidak ada data jilid Al Karim'));
-                        }
-
-                        final items = snapshot.data?.data;
-                        print('Jumlah Jilid: ${items?.length}');
-
-                        return DropdownButtonFormField2<String>(
+                    child: Column(
+                      children: [
+                        DropdownButtonFormField2<String>(
                           isExpanded: true,
                           decoration: InputDecoration(
                             isDense: true,
@@ -151,7 +173,7 @@ class _GemaQuBacaJilidPageState extends State<GemaQuBacaJilidFormPage> {
                             labelText: 'Pilih Jilid',
                           ),
                           value: _selectedValue,
-                          items: items!.map((item) {
+                          items: items.map((item) {
                             return DropdownMenuItem<String>(
                               value: item.id.toString(),
                               child: Text(item.nama),
@@ -162,12 +184,10 @@ class _GemaQuBacaJilidPageState extends State<GemaQuBacaJilidFormPage> {
                               _selectedValue = newValue;
                             });
                           },
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Pilih jilid terlebih dahulu';
-                            }
-                            return null;
-                          },
+                          validator: (value) =>
+                          value == null || value.isEmpty
+                            ? 'Pilih jilid terlebih dahulu'
+                            : null,
                           buttonStyleData: const ButtonStyleData(
                             padding: EdgeInsets.zero,
                           ),
@@ -192,89 +212,74 @@ class _GemaQuBacaJilidPageState extends State<GemaQuBacaJilidFormPage> {
                               borderRadius: BorderRadius.circular(16),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black12.withOpacity(0.1),
+                                  color: Colors.black12.withValues(alpha: 0.1),
                                   blurRadius: 8,
                                   offset: const Offset(0, 4),
                                 ),
                               ],
                             ),
                           ),
-                        );
-                      },
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _halamanMulaiController,
+                          decoration: InputDecoration(
+                            isDense: true,
+                            border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300)),
+                            enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300)),
+                            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.tertiary, width: 2)),
+                            labelText: 'Halaman Mulai',
+                            hintText: '0',
+                          ),
+                          keyboardType: TextInputType.number,
+                          validator: (v) => Validators.requiredNumber(v,
+                              fieldName: 'Halaman Mulai', min: 1),
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _halamanSelesaiController,
+                          decoration: InputDecoration(
+                            isDense: true,
+                            border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300)),
+                            enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300)),
+                            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.tertiary, width: 2)),
+                            labelText: 'Halaman Selesai',
+                            hintText: '0',
+                          ),
+                          keyboardType: TextInputType.number,
+                          validator: (v) => Validators.requiredNumber(v,
+                            fieldName: 'Halaman selesai',
+                            min: int.tryParse(_halamanMulaiController.text) ?? 1),
+                          onFieldSubmitted: (_) {
+                            FocusScope.of(context).unfocus();
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              _submitForm();
+
+                              ScaffoldMessenger.of(context).showSnackBar(selfSnackbar('Data berhasil disimpan'));
+                            }
+                          },
+                          child: const Text('Simpan'),
+                        )
+                      ],
                     ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _halamanMulaiController,
-                      decoration: InputDecoration(
-                        isDense: true,
-                        border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300)),
-                        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300)),
-                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.tertiary, width: 2)),
-                        labelText: 'Halaman Mulai',
-                        hintText: '0',
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Halaman mulai tidak boleh kosong';
-                        }
-
-                        final number = int.tryParse(value);
-                        if (number == null) {
-                          return 'Masukkan angka yang valid';
-                        }
-
-                        if (number < 1) {
-                          return 'Masukkan angka yang valid';
-                        }
-
-                        return null;
-                      }
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _halamanSelesaiController,
-                      decoration: InputDecoration(
-                        isDense: true,
-                        border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300)),
-                        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300)),
-                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.tertiary, width: 2)),
-                        labelText: 'Halaman Selesai',
-                        hintText: '0',
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Halaman selesai tidak boleh kosong';
-                        }
-
-                        final number = int.tryParse(value);
-                        if (number == null) {
-                          return 'Masukkan angka yang valid';
-                        }
-
-                        if (number < 1) {
-                          return 'Masukkan angka yang valid';
-                        }
-
-                        return null;
-                      },
-                      onFieldSubmitted: (_) {
-                        FocusScope.of(context).unfocus();
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: _submitForm,
-                      child: const Text('Simpan'),
-                    )
-                  ],
-                ),
-              )
-            ]
-          ),
-        ),
+                  )
+                ]
+              ),
+            ),
+          );
+        }
       ),
     );
   }
+}
+
+class GemaQuBacaJilidData {
+  final GemaQuBacaJilidResponse gemaQuBacaJilid;
+  final BukuAlKarimJilidResponse jilidList;
+  GemaQuBacaJilidData(this.gemaQuBacaJilid, this.jilidList);
 }

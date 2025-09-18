@@ -21,7 +21,8 @@ class Data {
   final int halamanMulai;
   final int halamanSelesai;
   final int jumlahHalaman;
-  final String bukuAlkarim;
+  final String bukuAlKarim;
+  int? bukuAlKarimId;
 
   Data({
     required this.tanggal,
@@ -29,7 +30,8 @@ class Data {
     required this.halamanMulai,
     required this.halamanSelesai,
     required this.jumlahHalaman,
-    required this.bukuAlkarim,
+    required this.bukuAlKarim,
+    this.bukuAlKarimId,
   });
 
   Data.fromJson(Map<String, dynamic> json)
@@ -38,5 +40,6 @@ class Data {
       halamanMulai = json['halaman_mulai'],
       halamanSelesai = json['halaman_selesai'],
       jumlahHalaman = json['jumlah_halaman'],
-      bukuAlkarim = json['buku_alkarim'];
+      bukuAlKarim = json['buku_alkarim'],
+      bukuAlKarimId = json['buku_alkarim_id'];
 }

@@ -8,71 +8,74 @@ import 'package:flutter/material.dart';
 class HasilUjianPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: CardWithIcon(
-                title: 'Tahsin',
-                description: 'Ujian membaca Al Quran',
-                icon: Icons.book_rounded,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => UjianTahsinPage()),
-                  );
-                },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: CardWithIcon(
+                  title: 'Tahsin',
+                  description: 'Ujian membaca Al Quran',
+                  icon: Icons.book_rounded,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => UjianTahsinPage()),
+                    );
+                  },
+                ),
               ),
-            ),
-            SizedBox(width: 8),
-            Expanded(
-              child: CardWithIcon(
-                title: 'Tahfidz',
-                description: 'Ujian hafalan Al Quran',
-                icon: Icons.book_rounded,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => UjianTahfidzPage()),
-                  );
-                }
+              SizedBox(width: 8),
+              Expanded(
+                child: CardWithIcon(
+                  title: 'Tahfidz',
+                  description: 'Ujian hafalan Al Quran',
+                  icon: Icons.book_rounded,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => UjianTahfidzPage()),
+                    );
+                  }
+                ),
               ),
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: CardWithIcon(
-                title: 'Tasmi',
-                description: 'Ujian hafalan Al Quran perjuz',
-                icon: Icons.book_rounded,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => UjianTasmiPage()),
-                  );
-                }
+            ],
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: CardWithIcon(
+                  title: 'Tasmi',
+                  description: 'Ujian hafalan Al Quran perjuz',
+                  icon: Icons.book_rounded,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => UjianTasmiPage()),
+                    );
+                  }
+                ),
               ),
-            ),
-            SizedBox(width: 8),
-            Expanded(
-              child: CardWithIcon(
-                title: 'Naik Jilid',
-                description: 'Ujian kenaikan jilid Al Karim',
-                icon: Icons.book_rounded,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => UjianNaikJilidPage()),
-                  );
-                }
+              SizedBox(width: 8),
+              Expanded(
+                child: CardWithIcon(
+                  title: 'Naik Jilid',
+                  description: 'Ujian kenaikan jilid Al Karim',
+                  icon: Icons.book_rounded,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => UjianNaikJilidPage()),
+                    );
+                  }
+                ),
               ),
-            ),
-          ],
-        )
-      ],
+            ],
+          )
+        ],
+      ),
     );
   }
 }

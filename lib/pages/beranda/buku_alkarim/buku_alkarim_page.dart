@@ -13,8 +13,9 @@ import 'package:pdfx/pdfx.dart';
 
 class BukuAlKarimPage extends StatefulWidget {
   final int id;
+  final String jilid;
 
-  const BukuAlKarimPage({required this.id, super.key});
+  const BukuAlKarimPage({required this.id, required this.jilid, super.key});
 
   @override
   State<BukuAlKarimPage> createState() => _BukuAlKarimPageState();
@@ -95,6 +96,8 @@ class _BukuAlKarimPageState extends State<BukuAlKarimPage> {
   }
 
   void toggleAudio(String audioPath) async {
+    debugPrint('Audio URL: $audioPath');
+
     if (audioPath.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Audio tidak tersedia')),
@@ -134,7 +137,8 @@ class _BukuAlKarimPageState extends State<BukuAlKarimPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Buku Al Karim'),
+        centerTitle: true,
+        title: Text(widget.jilid),
         backgroundColor: AppColors.background,
         elevation: 0,
       ),
@@ -144,18 +148,35 @@ class _BukuAlKarimPageState extends State<BukuAlKarimPage> {
           : _pdfFile == null
             ? Center(child: Text('Gagal memuat buku'))
           : Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               if (_details[_currentPage - 1].audio!.isNotEmpty)
-                ElevatedButton.icon(
-                  icon:Icon(isPlaying ? Icons.pause : Icons.play_arrow),
-                  label: Text('Play Audio'),
-                  onPressed: () => toggleAudio(_details[_currentPage - 1].audio!),
+                Container(
+                  margin: EdgeInsets.only(bottom: 20, top: 4),
+                  child: ElevatedButton.icon(
+                      icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
+                      label: Text('Bagaimana bunyinya?'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: AppColors.primary,
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: 16,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        minimumSize: const Size(0, 44),
+                      ),
+                      onPressed: () => toggleAudio(_details[_currentPage - 1].audio!),
+                    ),
                 ),
-              Expanded(
+              Flexible(
+                fit: FlexFit.loose,
                 child: ValueListenableBuilder<int>(
                   valueListenable: _pdfController.pageListenable,
                   builder: (context, currentPage, _) {
-                    _currentPage = currentPage; // update current page here
+                    _currentPage = currentPage;
 
                     return PdfView(
                       controller: _pdfController,
@@ -177,6 +198,63 @@ class _BukuAlKarimPageState extends State<BukuAlKarimPage> {
                   },
                 ),
               ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: IntrinsicWidth(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 28),
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        /*decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12.withValues(alpha: 0.05),
+                              blurRadius: 8,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),*/
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.chevron_left_rounded),
+                              onPressed: () {
+                                if (_currentPage > 1) {
+                                  final prev = _currentPage - 1;
+                                  _pdfController.jumpToPage(prev);
+                                  setState(() => _currentPage = prev);
+                                }
+                              },
+                            ),
+                            const SizedBox(width: 20),
+                            Text(
+                              'Halaman $_currentPage',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            const SizedBox(width: 20),
+                            IconButton(
+                              icon: const Icon(Icons.chevron_right_rounded),
+                              onPressed: () {
+                                final totalPages = _pdfController.pagesCount;
+                                if (totalPages != null && _currentPage < totalPages) {
+                                  final next = _currentPage + 1;
+                                  _pdfController.jumpToPage(next);
+                                  setState(() => _currentPage = next);
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              )
             ],
           ),
     );

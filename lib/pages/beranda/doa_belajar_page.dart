@@ -65,6 +65,7 @@ class _DoaBelajarPageState extends State<DoaBelajarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text('Doa Belajar'),
         backgroundColor: AppColors.background,
         elevation: 0,

@@ -41,15 +41,18 @@ class Data {
 class BacaQuran {
   final bool status;
   final String? text;
+  final String? tipeInput;
 
   BacaQuran({
     required this.status,
     required this.text,
+    required this.tipeInput,
   });
 
   BacaQuran.fromJson(Map<String, dynamic> json)
     : status = json['status'],
-      text = json['text'];
+      text = json['text'],
+      tipeInput = json['tipe_input'];
 }
 
 class BacaJilid {
@@ -69,27 +72,33 @@ class BacaJilid {
 class Tahfidz {
   final bool status;
   final String? text;
+  final String? tipeInput;
 
   Tahfidz({
     required this.status,
     required this.text,
+    required this.tipeInput,
   });
 
   Tahfidz.fromJson(Map<String, dynamic> json)
     : status = json['status'],
-      text = json['text'];
+      text = json['text'],
+      tipeInput = json['tipe_input'];
 }
 
 class Murojaah {
   final bool status;
   final String? text;
+  final String? tipeInput;
 
   Murojaah({
     required this.status,
     required this.text,
+    required this.tipeInput,
   });
 
   Murojaah.fromJson(Map<String, dynamic> json)
     : status = json['status'],
-      text = json['text'];
+      text = json['text'],
+      tipeInput = json['tipe_input'];
 }

@@ -2,6 +2,9 @@ class Endpoints {
   // login
   static const String login = 'login';
 
+  // pencapaian
+  static const String pencapaian = 'siswa/dashboard2';
+
   // buku alkarim
   static const String bukuAlKarimJilid = 'buku-alkarim';
   static String bukuAlKarim(int id) => 'buku-alkarim/$id';
@@ -20,8 +23,10 @@ class Endpoints {
   // mutabaah gemaqu
   static String mutabaahGemaQuPerbulan(int month, int year) => 'siswa/mutabaah/ringkasan-perbulan/$month/$year';
   static String mutabaahGemaQuHarian(int year, int month, int day) => 'siswa/mutabaah/tanggal/$year-$month-$day';
-  static const String mutabaahGemaQuBacaJilid = 'siswa/mutabaah/jilid/tanggal';
-  static const String mutabaahGemaQuBacaQuran = 'siswa/mutabaah/tilawah/tanggal';
+  static String mutabaahGemaQuBacaJilid(String date) => 'siswa/mutabaah/jilid/tanggal/$date';
+  static String mutabaahGemaQuBacaQuran(String date) => 'siswa/mutabaah/tilawah/tanggal/$date';
+  static const String mutabaahGemaQuBacaJilidSave = 'siswa/mutabaah/jilid/tanggal';
+  static const String mutabaahGemaQuBacaQuranSave = 'siswa/mutabaah/tilawah/tanggal';
   static const String mutabaahGemaQuTahfidz = 'siswa/mutabaah/tahfidz/tanggal';
   static const String mutabaahGemaQuMurojaah = 'siswa/mutabaah/murojaah/tanggal';
 

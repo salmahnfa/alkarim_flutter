@@ -2,6 +2,8 @@ import 'package:alkarim/api/api_service.dart';
 import 'package:alkarim/api/endpoints.dart';
 import 'package:alkarim/app_colors.dart';
 import 'package:alkarim/auth_helper.dart';
+import 'package:alkarim/models/buku_alkarim_jilid_response.dart';
+import 'package:alkarim/models/gemaqu_baca_jilid_reponse.dart';
 import 'package:alkarim/models/mutabaah_sekolah_harian_response.dart';
 import 'package:alkarim/models/mutabaah_sekolah_perbulan_response.dart';
 import 'package:alkarim/pages/beranda/mutabaah_sekolah/detail_baca_jilid_page.dart';
@@ -10,6 +12,7 @@ import 'package:alkarim/pages/beranda/mutabaah_sekolah/detail_murojaah_page.dart
 import 'package:alkarim/pages/beranda/mutabaah_sekolah/detail_tahfidz_page.dart';
 import 'package:alkarim/pages/beranda/mutabaah_sekolah/detail_talaqqi_page.dart';
 import 'package:alkarim/pages/login_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -43,7 +46,6 @@ class _MutabaahSekolahPageState extends State<MutabaahSekolahPage> with SingleTi
     _tabController.dispose();
     super.dispose();
   }
-
 
   Future<MutabaahSekolahPerbulanResponse> fetchData() async {
     final token = await AuthHelper.getActiveToken();
@@ -94,6 +96,7 @@ class _MutabaahSekolahPageState extends State<MutabaahSekolahPage> with SingleTi
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text('Mutabaah'),
         backgroundColor: AppColors.background,
         elevation: 0,
@@ -243,14 +246,39 @@ class _MutabaahSekolahPageState extends State<MutabaahSekolahPage> with SingleTi
                     child: Text(dateFormat.format(_selectedDay)),
                   ),
                   const SizedBox(height: 16),
-                  TabBar(
-                    controller: _tabController,
-                    tabs: [
-                      Tab(text: 'Sekolah'),
-                      Tab(text: 'Asrama'),
-                    ],
-                    labelColor: Colors.black,
-                    unselectedLabelColor: Colors.grey,
+                  Container(
+                    //margin: const EdgeInsets.symmetric(vertical: ),
+                    //padding: const EdgeInsets.all(4), // jarak antara border dan tab
+                    decoration: BoxDecoration(
+                      color: AppColors.background,
+                      /*border: Border.all(
+                        color: AppColors.background,  // warna garis frame
+                        width: 1,
+                      ),*/
+                      borderRadius: BorderRadius.circular(41),
+                    ),
+                    child: TabBar(
+                      controller: _tabController,
+                      tabs: const [
+                        Tab(text: 'Sekolah'),
+                        Tab(text: 'Asrama'),
+                      ],
+                      labelColor: Colors.white, // warna teks saat terpilih
+                      labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.bold
+                      ),
+                      unselectedLabelColor: Colors.grey,
+                      unselectedLabelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.normal,
+                      ),
+                      indicator: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.7),      // warna latar tab terpilih
+                        borderRadius: BorderRadius.circular(30), // bikin bulat
+                      ),
+                      indicatorSize: TabBarIndicatorSize.tab, // biar indikator selebar tab
+                      indicatorPadding: EdgeInsets.all(4),
+                      dividerColor: Colors.transparent,
+                    ),
                   ),
                   FutureBuilder<MutabaahSekolahHarianResponse>(
                       future: _dailyFuture,
@@ -307,8 +335,10 @@ Widget buildCardViews(BuildContext context, dynamic mutabaah) {
     children: [
       _buildInfoRowWithIcon(
         icon: Icons.book_rounded,
+        iconColor: mutabaah.bacaJilid.status ? AppColors.primary : AppColors.textPrimary,
         label: 'Baca Jilid',
         value: '${mutabaah.bacaJilid.text}',
+        showArrow: mutabaah.bacaJilid.status,
         onTap: () {
           if (mutabaah.bacaJilid.status) {
             Navigator.push(
@@ -321,9 +351,11 @@ Widget buildCardViews(BuildContext context, dynamic mutabaah) {
         },
       ),
       _buildInfoRowWithIcon(
-        icon: Icons.book_rounded,
+        icon: CupertinoIcons.book_fill,
+        iconColor: mutabaah.bacaQuran.status ? AppColors.primary : AppColors.textPrimary,
         label: 'Baca Al Quran',
         value: '${mutabaah.bacaQuran.text}',
+        showArrow: mutabaah.bacaQuran.status,
         onTap: () {
           if (mutabaah.bacaQuran.status) {
             Navigator.push(
@@ -336,9 +368,11 @@ Widget buildCardViews(BuildContext context, dynamic mutabaah) {
         },
       ),
       _buildInfoRowWithIcon(
-        icon: Icons.book_rounded,
+        icon: Icons.add,
+        iconColor: mutabaah.tahfidz.status ? AppColors.primary : AppColors.textPrimary,
         label: 'Tahfidz',
         value: '${mutabaah.tahfidz.text}',
+        showArrow: mutabaah.tahfidz.status,
         onTap: () {
           if (mutabaah.tahfidz.status) {
             Navigator.push(
@@ -351,9 +385,11 @@ Widget buildCardViews(BuildContext context, dynamic mutabaah) {
         },
       ),
       _buildInfoRowWithIcon(
-        icon: Icons.book_rounded,
+        icon: Icons.replay,
+        iconColor: mutabaah.murojaah.status ? AppColors.primary : AppColors.textPrimary,
         label: 'Murojaah',
         value: '${mutabaah.murojaah.text}',
+        showArrow: mutabaah.murojaah.status,
         onTap: () {
           if (mutabaah.murojaah.status) {
             Navigator.push(
@@ -366,9 +402,11 @@ Widget buildCardViews(BuildContext context, dynamic mutabaah) {
         },
       ),
       _buildInfoRowWithIcon(
-        icon: Icons.book_rounded,
+        icon: CupertinoIcons.speaker_1_fill,
+        iconColor: mutabaah.talaqqi.status ? AppColors.primary : AppColors.textPrimary,
         label: 'Talaqqi',
         value: '${mutabaah.talaqqi.text}',
+        showArrow: mutabaah.talaqqi.status,
         isLast: true,
         onTap: () {
           if (mutabaah.talaqqi.status) {
@@ -387,9 +425,11 @@ Widget buildCardViews(BuildContext context, dynamic mutabaah) {
 
 Widget _buildInfoRowWithIcon({
   required IconData icon,
+  required Color iconColor,
   Color? iconBackground,
   required String label,
   String? value,
+  required bool showArrow,
   bool isLast = false,
   VoidCallback? onTap,
 }) {
@@ -404,15 +444,12 @@ Widget _buildInfoRowWithIcon({
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center, // icon + text center
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: iconBackground ?? Colors.blue.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                padding: EdgeInsets.all(8),
-                child: Icon(icon, color: Colors.blue, size: 18),
+              CircleAvatar(
+                  radius: 16,
+                  backgroundColor: iconColor.withValues(alpha: 0.1),
+                  child: Icon(icon, color: iconColor.withValues(alpha: 0.7), size: 18)
               ),
               SizedBox(width: 12),
               Expanded(
@@ -450,6 +487,9 @@ Widget _buildInfoRowWithIcon({
                   ),
                 ),
               ),
+              if (showArrow) ...[
+                Icon(Icons.chevron_right_rounded, color: Colors.grey[400]),
+              ],
             ],
           ),
 
@@ -461,4 +501,10 @@ Widget _buildInfoRowWithIcon({
       ),
     ),
   );
+}
+
+class fetchAllData {
+  final GemaQuBacaJilidResponse gemaQuBacaJilid;
+  final BukuAlKarimJilidResponse jilidList;
+  fetchAllData(this.gemaQuBacaJilid, this.jilidList);
 }

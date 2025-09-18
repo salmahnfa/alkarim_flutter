@@ -13,6 +13,7 @@ import 'package:alkarim/pages/beranda/mutabaah_gemaqu/gemaqu_murojaah_halaman_fo
 import 'package:alkarim/pages/beranda/mutabaah_gemaqu/gemaqu_murojaah_surah_form_page.dart';
 import 'package:alkarim/pages/beranda/mutabaah_gemaqu/gemaqu_tahfidz_ayat_form_page.dart';
 import 'package:alkarim/pages/beranda/mutabaah_gemaqu/gemaqu_tahfidz_halaman_form_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -87,6 +88,7 @@ class _MutabaahGemaQuPageState extends State<MutabaahGemaQuPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text('GemaQu'),
         backgroundColor: AppColors.background,
         elevation: 0,
@@ -169,14 +171,17 @@ class _MutabaahGemaQuPageState extends State<MutabaahGemaQuPage> {
                                 });
                               },
                               calendarStyle: CalendarStyle(
-                                todayDecoration: BoxDecoration(
+                                /*todayDecoration: BoxDecoration(
                                   color: Colors.orange,
                                   shape: BoxShape.circle,
-                                ),
-                                selectedDecoration: BoxDecoration(
-                                  color: Colors.green,
+                                ),*/
+                                /*selectedDecoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.blue,
+                                    width: 2,
+                                  ),
                                   shape: BoxShape.circle,
-                                ),
+                                ),*/
                               ),
                               calendarBuilders: CalendarBuilders(
                                 defaultBuilder: (context, day, focusedDay) {
@@ -184,9 +189,9 @@ class _MutabaahGemaQuPageState extends State<MutabaahGemaQuPage> {
 
                                   Color color;
                                   if (tipe == 'sebagian') {
-                                    color = Colors.red;
+                                    color = AppColors.secondary.withValues(alpha: 0.7);
                                   } else if (tipe == 'lengkap') {
-                                    color = Colors.deepPurpleAccent;
+                                    color = AppColors.primary.withValues(alpha: 0.7);
                                   } else {
                                     return null;
                                   }
@@ -203,7 +208,21 @@ class _MutabaahGemaQuPageState extends State<MutabaahGemaQuPage> {
                                       style: TextStyle(color: Colors.white),
                                     ),
                                   );
-                                }
+                                },
+                                /*todayBuilder: (context, day, focusedDay) {
+                                  // cek apakah day sama dengan DateTime.now() hanya tanggalnya
+                                  final isToday = isSameDay(day, DateTime.now());
+
+                                  return Center(
+                                    child: Text(
+                                      '${day.day}',
+                                      style: TextStyle(
+                                        fontWeight: isToday ? FontWeight.bold : FontWeight.normal,      // BOLD untuk hari ini
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  );
+                                },*/
                               ),
                             ),
                             //const SizedBox(height: 10),
@@ -257,8 +276,8 @@ class _MutabaahGemaQuPageState extends State<MutabaahGemaQuPage> {
                       ),
                       const SizedBox(height: 16),
                       _buildInfoRowWithIcon(
-                        icon: Icons.book,
-
+                        icon: Icons.book_rounded,
+                        iconColor: data.bacaJilid.status ? AppColors.primary : AppColors.textPrimary,
                         label: 'Baca Jilid',
                         value: '${data.bacaJilid.text}',
                         onTap: () {
@@ -271,19 +290,32 @@ class _MutabaahGemaQuPageState extends State<MutabaahGemaQuPage> {
                         },
                       ),
                       _buildInfoRowWithIcon(
-                        icon: Icons.book,
+                        icon: CupertinoIcons.book_fill,
+                        iconColor: data.bacaQuran.status ? AppColors.primary : AppColors.textPrimary,
                         label: 'Baca Al Quran',
                         value: '${data.bacaQuran.text}',
-                        onTap: () => _showBottomSheet(
-                            context,
-                            {
-                              'Ayat': (_) => GemaQuBacaQuranAyatFormPage(selectedDay: getOnlyDate(_selectedDay)),
-                              'Halaman': (_) => GemaQuBacaQuranHalamanFormPage(selectedDay: getOnlyDate(_selectedDay)),
-                            }
-                        ),
+                        onTap: () {
+                          if (data.bacaQuran.status) {
+                            Navigator.push(
+                              context,
+                              data.bacaQuran.tipeInput == 'halaman'
+                                ? MaterialPageRoute(builder: (_) => GemaQuBacaQuranHalamanFormPage(selectedDay: getOnlyDate(_selectedDay)))
+                                : MaterialPageRoute(builder: (_) => GemaQuBacaQuranAyatFormPage(selectedDay: getOnlyDate(_selectedDay)))
+                            );
+                          } else {
+                            _showBottomSheet(
+                              context,
+                              {
+                                'Ayat': (_) => GemaQuBacaQuranAyatFormPage(selectedDay: getOnlyDate(_selectedDay)),
+                                'Halaman': (_) => GemaQuBacaQuranHalamanFormPage(selectedDay: getOnlyDate(_selectedDay)),
+                              }
+                            );
+                          }
+                        }
                       ),
                       _buildInfoRowWithIcon(
-                        icon: Icons.book_rounded,
+                        icon: Icons.add,
+                        iconColor: data.tahfidz.status ? AppColors.primary : AppColors.textPrimary,
                         label: 'Tahfidz',
                         value: '${data.tahfidz.text}',
                         onTap: () => _showBottomSheet(
@@ -295,7 +327,8 @@ class _MutabaahGemaQuPageState extends State<MutabaahGemaQuPage> {
                         ),
                       ),
                       _buildInfoRowWithIcon(
-                        icon: Icons.book,
+                        icon: Icons.replay_rounded,
+                        iconColor: data.murojaah.status ? AppColors.primary : AppColors.textPrimary,
                         label: 'Murojaah',
                         value: '${data.murojaah.text}',
                         isLast: true,
@@ -385,6 +418,7 @@ void _showBottomSheet(BuildContext context, Map<String, WidgetBuilder> pages) {
 
 Widget _buildInfoRowWithIcon({
   required IconData icon,
+  required Color iconColor,
   Color? iconBackground,
   required String label,
   String? value,
@@ -402,15 +436,12 @@ Widget _buildInfoRowWithIcon({
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center, // icon + text center
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: iconBackground ?? Colors.blue.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                padding: EdgeInsets.all(8),
-                child: Icon(icon, color: Colors.blue, size: 18),
+              CircleAvatar(
+                  radius: 16,
+                  backgroundColor: iconColor.withValues(alpha: 0.1),
+                  child: Icon(icon, color: iconColor.withValues(alpha: 0.7), size: 18)
               ),
               SizedBox(width: 12),
               Expanded(
@@ -448,6 +479,7 @@ Widget _buildInfoRowWithIcon({
                   ),
                 ),
               ),
+              Icon(Icons.chevron_right_rounded, color: Colors.grey[400]),
             ],
           ),
 

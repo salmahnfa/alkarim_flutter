@@ -1,3 +1,4 @@
+import 'package:alkarim/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class CardWithIcon extends StatelessWidget {
@@ -36,19 +37,10 @@ class CardWithIcon extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (icon != null) ...[
-                Container(
-                  decoration: BoxDecoration(
-                    color: iconBackground ?? Colors.blue.withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  padding: const EdgeInsets.all(8),
-                  child: Icon(
-                    icon,
-                    color: iconBackground != null
-                      ? Colors.white
-                      : Colors.blue,
-                    size: 18,
-                  ),
+                CircleAvatar(
+                    radius: 18,
+                    backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                    child: Icon(icon, color: AppColors.primary.withValues(alpha: 0.7), size: 20)
                 ),
                 const SizedBox(height: 12),
               ],

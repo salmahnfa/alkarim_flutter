@@ -77,28 +77,51 @@ class _LihatProfilPageState extends State<LihatProfilPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 12),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12.withValues(alpha: 0.05),
-                          blurRadius: 8,
-                          offset: Offset(0, 4),
+                  SizedBox(height: 16),
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12.withValues(alpha: 0.05),
+                              blurRadius: 8,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        infoRow('Nama', data.nama),
-                        infoRow('Email', data.email, isLast: true),
-                      ],
-                    ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            /*SizedBox(height: 16),*/
+                            infoRow('Nama', data.nama),
+                            infoRow('Email', data.email, isLast: true),
+                          ],
+                        ),
+                      ),
+                      /*Positioned(
+                        top: -32,
+                        left: 0,
+                        right: 0,
+                        child: CircleAvatar(
+                          radius: 32,
+                          backgroundColor: AppColors.secondary.withValues(alpha: 0.1),
+                          child: Text(
+                            data.nama[0].toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 24,
+                              color: AppColors.secondary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      )*/
+                    ],
                   ),
                   SizedBox(height: 24),
                   Text(

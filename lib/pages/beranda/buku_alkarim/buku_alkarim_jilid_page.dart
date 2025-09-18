@@ -8,6 +8,8 @@ import 'package:alkarim/auth_helper.dart';
 import 'package:alkarim/api/api_service.dart';
 import 'package:alkarim/models/buku_alkarim_jilid_response.dart';
 
+import '../../../jilid_list.dart';
+
 class BukuAlKarimJilidPage extends StatefulWidget {
   @override
   State<BukuAlKarimJilidPage> createState() => _BukuAlKarimJilidPageState();
@@ -71,14 +73,15 @@ class _BukuAlKarimJilidPageState extends State<BukuAlKarimJilidPage> {
               itemCount: items?.length,
               itemBuilder: (context, index) {
                 final item = items![index];
-                return ItemList(
+                return JilidList(
                   title: item.nama,
                   description: item.deskripsi,
+                  halaman: item.jumlahHalaman,
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => BukuAlKarimPage(id: item.id)),
+                        builder: (_) => BukuAlKarimPage(id: item.id, jilid: item.nama)),
                     );
                   },
                 );

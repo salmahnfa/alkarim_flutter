@@ -1,4 +1,6 @@
+import 'package:alkarim/auth_helper.dart';
 import 'package:alkarim/card_with_icon.dart';
+import 'package:alkarim/models/siswa_pencapaian_response.dart';
 import 'package:alkarim/pages/beranda/mutabaah_gemaqu/mutabaah_gemaqu_page.dart';
 import 'package:alkarim/pages/beranda/mutabaah_sekolah/mutabaah_sekolah_page.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,9 @@ import 'package:alkarim/pages/beranda/murottal/murottal_page.dart';
 import 'package:alkarim/pages/beranda/asmaul_husna_page.dart';
 import 'package:alkarim/pages/beranda/doa_belajar_page.dart';
 
+import '../../api/api_service.dart';
+import '../../api/endpoints.dart';
+
 class Beranda extends StatefulWidget {
   @override
   State<Beranda> createState() => _BerandaState();
@@ -20,7 +25,7 @@ class _BerandaState extends State<Beranda> {
   var _selectedIndex = 0;
 
   static const List<String> _titles = [
-    'Beranda',
+    '',
     'Hasil Ujian',
     'Profil',
   ];
@@ -46,14 +51,19 @@ class _BerandaState extends State<Beranda> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_titles[_selectedIndex]),
-        backgroundColor: AppColors.background,
-        elevation: 0,
-      ),
+      appBar: _selectedIndex == 0
+        ? null
+        : AppBar(
+          title: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            child: Text(_titles[_selectedIndex]),
+          ),
+          centerTitle: false,
+          backgroundColor: AppColors.background,
+          elevation: 0,
+        ),
       backgroundColor: AppColors.background,
       body: Container(
-          padding: const EdgeInsets.all(16),
           child: page
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -83,110 +93,248 @@ class _BerandaState extends State<Beranda> {
   }
 }
 
-class BerandaPage extends StatelessWidget {
+class BerandaPage extends StatefulWidget {
+  @override
+  State<BerandaPage> createState() => _BerandaPageState();
+}
+
+class _BerandaPageState extends State<BerandaPage> {
+  late Future<SiswaPencapaianResponse> _future;
+  String? _nama;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    _loadSiswa();
+    _future = fetchData();
+  }
+
+  Future<void> _loadSiswa() async {
+    final activeData = AuthHelper.getActiveSiswaData();
+
+    setState(() {
+      _nama = activeData?['nama'];
+    });
+  }
+
+  Future<SiswaPencapaianResponse> fetchData() async {
+    final token = await AuthHelper.getActiveToken();
+
+    if (token == null) {
+      throw Exception('Pengguna perlu login ulang untuk melanjutkan.');
+    }
+
+    final res = await api.request<SiswaPencapaianResponse>(
+      Endpoints.pencapaian,
+      RequestType.GET,
+      token: token,
+      fromJson: (json) => SiswaPencapaianResponse.fromJson(json),
+    );
+    return res;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12.withValues(alpha: 0.05),
-                blurRadius: 8,
-                offset: Offset(0, 4),
+        Stack(
+          children: [
+            ClipRect(
+              child: Align(
+                alignment: Alignment.topCenter,
+                heightFactor: 0.4,
+                child: Transform.translate(
+                  offset: const Offset(0, -232),
+                  child: Image.asset(
+                    'assets/images/header.png',
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-            ],
+            ),
+            Positioned(
+              top: 80,
+              left: 16,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Assalamualaikum,',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppColors.textPrimary,
+                      ),
+                  ),
+                  Text(
+                   '$_nama',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12.withValues(alpha: 0.05),
+                  blurRadius: 8,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButtonWithLabel(
+                  icon: Icons.star_rounded,
+                  iconColor: AppColors.secondary,
+                  buttonColor: AppColors.background,
+                  label: 'Buku \nAl Karim',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => BukuAlKarimJilidPage()),
+                    );
+                  },
+                ),
+                IconButtonWithLabel(
+                  icon: Icons.headphones_rounded,
+                  iconColor: AppColors.primary,
+                  buttonColor: AppColors.background,
+                  label: 'Murottal\n',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => MurottalPage()),
+                    );
+                  }
+                ),
+                IconButtonWithLabel(
+                  icon: Icons.anchor_rounded,
+                  iconColor: AppColors.secondary,
+                  buttonColor: AppColors.background,
+                  label: 'Asmaul \nHusna',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => AsmaulHusnaPage()),
+                    );
+                  }
+                ),
+                IconButtonWithLabel(
+                  icon: Icons.book_rounded,
+                  iconColor: AppColors.primary,
+                  buttonColor: AppColors.background,
+                  label: 'Doa \nBelajar',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => DoaBelajarPage()),
+                    );
+                  }
+                ),
+              ],
+            ),
           ),
+        ),
+        const SizedBox(height: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButtonWithLabel(
-                icon: Icons.star_rounded,
-                iconColor: AppColors.secondary,
-                buttonColor: AppColors.background,
-                label: 'Buku \nAl Karim',
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => BukuAlKarimJilidPage()),
-                  );
-                },
+              Expanded(
+                child: CardWithIcon(
+                  title: 'GemaQu',
+                  description: 'Capaian kegiatan Quran mandiri',
+                  icon: Icons.home_rounded,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => MutabaahGemaQuPage()),
+                    );
+                  },
+                ),
               ),
-              IconButtonWithLabel(
-                icon: Icons.headphones_rounded,
-                iconColor: AppColors.primary,
-                buttonColor: AppColors.background,
-                label: 'Murottal\n',
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => MurottalPage()),
-                  );
-                }
-              ),
-              IconButtonWithLabel(
-                icon: Icons.anchor_rounded,
-                iconColor: AppColors.secondary,
-                buttonColor: AppColors.background,
-                label: 'Asmaul \nHusna',
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => AsmaulHusnaPage()),
-                  );
-                }
-              ),
-              IconButtonWithLabel(
-                icon: Icons.book_rounded,
-                iconColor: AppColors.primary,
-                buttonColor: AppColors.background,
-                label: 'Doa \nBelajar',
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => DoaBelajarPage()),
-                  );
-                }
-              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: CardWithIcon(
+                  title: 'Mutabaah',
+                  description: 'Capaian kegiatan Quran di sekolah',
+                  icon: Icons.home_repair_service_rounded,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => MutabaahSekolahPage()),
+                    );
+                  },
+                )
+              )
             ],
           ),
         ),
         const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: CardWithIcon(
-                title: 'GemaQu',
-                description: 'Capaian kegiatan Quran mandiri',
-                icon: Icons.note_add_rounded,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => MutabaahGemaQuPage()),
-                  );
-                },
+        FutureBuilder<SiswaPencapaianResponse>(
+          future: _future,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              debugPrint('Future error: ${snapshot.error}');
+              debugPrint('Stack trace: ${snapshot.stackTrace}');
+              return Center(child: Text('Gagal memuat halaman'));
+            } else if (!snapshot.hasData) {
+              return Center(child: Text('Tidak ada data siswa'));
+            }
+            
+            final data = snapshot.data!.data;
+            
+            return RefreshIndicator(
+              onRefresh: () async {
+                setState(() {
+                  _future = fetchData();
+                });
+              },
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12.withValues(alpha: 0.05),
+                            blurRadius: 8,
+                            offset: Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Text(data.murojaah.toString()),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: CardWithIcon(
-                title: 'Mutabaah',
-                description: 'Capaian kegiatan Quran di sekolah',
-                icon: Icons.school_rounded,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => MutabaahSekolahPage()),
-                  );
-                },
-              )
-            )
-          ],
+            );
+          }
         ),
       ],
     );
@@ -217,14 +365,10 @@ class IconButtonWithLabel extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: onPressed,
-          child: Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: buttonColor,
-            ),
-            child: Icon(icon, size: 32, color: iconColor),
+          child: CircleAvatar(
+              radius: 28,
+              backgroundColor: AppColors.background,
+              child: Icon(icon, color: iconColor.withValues(alpha: 0.7), size: 32)
           ),
         ),
         const SizedBox(height: 8),

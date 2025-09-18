@@ -65,6 +65,7 @@ class _AsmaulHusnaPageState extends State<AsmaulHusnaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: Text('Asmaul Husna'),
           backgroundColor: AppColors.background,
           elevation: 0,

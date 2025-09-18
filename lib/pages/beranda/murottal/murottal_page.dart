@@ -23,7 +23,7 @@ class MurottalPage extends StatelessWidget {
                   child: CardWithIcon(
                     title: 'Murottal Surah',
                     description: 'Murottal diputar persurah',
-                    icon: Icons.play_arrow_rounded,
+                    icon: Icons.bookmark_rounded,
                     onTap: () {
                       Navigator.push(
                         context,
@@ -37,7 +37,7 @@ class MurottalPage extends StatelessWidget {
                   child: CardWithIcon(
                     title: 'Murottal Ayat',
                     description: 'Murottal diputar perayat',
-                    icon: Icons.play_arrow_rounded,
+                    icon: Icons.flag_rounded,
                     onTap: () {
                       Navigator.push(
                         context,

@@ -67,7 +67,6 @@ class _UjianTahsinDetailPageState extends State<UjianTahsinDetailPage> {
           }
 
           final item = snapshot.data?.data;
-          print(item!.lulus == 1 ? 'Lulus' : 'Tidak Lulus');
 
           if (item == null) {
             return const Center(child: Text('Data tidak tersedia'));

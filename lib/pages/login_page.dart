@@ -44,7 +44,6 @@ class _LoginPageState extends State<LoginPage> {
         );
 
         final siswa = res.data.siswa;
-        final token = res.data.token;
 
         await AuthHelper.saveToken(res.data.siswa.siswaId, res.data.token);
         await AuthHelper.saveUserData(res.data.siswa.siswaId, res.data.siswa.nama, res.data.siswa.email, res.data.siswa.program, res.data.siswa.isAsrama);

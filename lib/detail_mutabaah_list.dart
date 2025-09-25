@@ -39,7 +39,7 @@ class DetailMutabaahList extends StatelessWidget {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: _getKelompokColor(data.tipeKelompok),
+                      color: _getKelompokColor(data.tipeKelompok).withValues(alpha: 0.7),
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
@@ -50,8 +50,11 @@ class DetailMutabaahList extends StatelessWidget {
                       ],
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
-                      child: Text(data.tipeKelompok),
+                      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 16),
+                      child: Text(
+                        data.tipeKelompok,
+                        style: TextStyle(color: Colors.white),
+                      ),
                     )
                   ),
                   const SizedBox(height: 8),
@@ -71,7 +74,7 @@ class DetailMutabaahList extends StatelessWidget {
                     ] else ...[
                       infoRow('Capaian', 'Halaman ${data.halamanMulai} - ${data.halamanSelesai}'),
                     ],
-                    infoRow('Keterangan', toBeginningOfSentenceCase(data.keterangan!.toLowerCase()))
+                    infoRow('Keterangan', toBeginningOfSentenceCase(data.keterangan!.toLowerCase()), isHighlighted: true)
                   ] else ...[
                     infoRow('Keterangan', data.kehadiran)
                   ],
@@ -120,7 +123,7 @@ class DetailMutabaahBacaJilidList extends StatelessWidget {
                 children: [
                   Container(
                       decoration: BoxDecoration(
-                        color: _getKelompokColor(data.tipeKelompok),
+                        color: _getKelompokColor(data.tipeKelompok).withValues(alpha: 0.7),
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
@@ -131,8 +134,13 @@ class DetailMutabaahBacaJilidList extends StatelessWidget {
                         ],
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
-                        child: Text(data.tipeKelompok),
+                        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 16),
+                        child: Text(
+                          data.tipeKelompok,
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
                       )
                   ),
                   const SizedBox(height: 8),
@@ -141,11 +149,11 @@ class DetailMutabaahBacaJilidList extends StatelessWidget {
                     infoRow('Jilid', data.buku),
                     if (data.halamanMulai != null && data.halamanSelesai != null) ...[
                       if (data.halamanMulai == data.halamanSelesai) ...[
-                        infoRow('Capaian', 'Halaman $data.halamanMulai'),
+                        infoRow('Capaian', 'Halaman ${data.halamanMulai}'),
                       ] else ...[
                         infoRow('Capaian', 'Halaman ${data.halamanMulai} - ${data.halamanSelesai}'),
                       ],
-                      infoRow('Keterangan', toBeginningOfSentenceCase(data.keterangan!.toLowerCase()))
+                      infoRow('Keterangan', toBeginningOfSentenceCase(data.keterangan!.toLowerCase()), isHighlighted: true)
                     ]
                   ] else ...[
                     infoRow('Keterangan', data.kehadiran)
@@ -165,14 +173,14 @@ class DetailMutabaahBacaJilidList extends StatelessWidget {
 Color _getKelompokColor(String tipe) {
   switch (tipe) {
     case 'Sekolah':
-      return Colors.yellow;
+      return Colors.blue;
     case 'Pesantren Tahfidz':
-      return Colors.green;
+      return Colors.teal;
     case 'Akselerasi':
       return Colors.orange;
     case 'Matrikulasi':
-      return Colors.red;
+      return Colors.pink;
     default:
-      return Colors.blue;
+      return Colors.purple;
   }
 }

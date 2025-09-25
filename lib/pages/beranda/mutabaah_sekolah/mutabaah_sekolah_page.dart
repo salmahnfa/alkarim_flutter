@@ -130,9 +130,7 @@ class _MutabaahSekolahPageState extends State<MutabaahSekolahPage> with SingleTi
                       print('Has Error: ${snapshot.hasError}');
                       print('Error: ${snapshot.error}');
 
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
+                      if (snapshot.hasError) {
                         return Center(child: Text('Gagal memuat profil siswa'));
                       } else if (!snapshot.hasData) {
                         return Center(child: Text('Tidak ada data siswa'));
@@ -183,7 +181,7 @@ class _MutabaahSekolahPageState extends State<MutabaahSekolahPage> with SingleTi
                                   shape: BoxShape.circle,
                                 ),
                                 selectedDecoration: BoxDecoration(
-                                  color: Colors.green,
+                                  color: Colors.blue,
                                   shape: BoxShape.circle,
                                 ),
                               ),
@@ -193,9 +191,9 @@ class _MutabaahSekolahPageState extends State<MutabaahSekolahPage> with SingleTi
 
                                   Color color;
                                   if (tipe == 'sebagian') {
-                                    color = Colors.red;
+                                    color = AppColors.secondary;
                                   } else if (tipe == 'lengkap') {
-                                    color = Colors.deepPurpleAccent;
+                                    color = Colors.green;
                                   } else {
                                     return null;
                                   }
@@ -247,14 +245,8 @@ class _MutabaahSekolahPageState extends State<MutabaahSekolahPage> with SingleTi
                   ),
                   const SizedBox(height: 16),
                   Container(
-                    //margin: const EdgeInsets.symmetric(vertical: ),
-                    //padding: const EdgeInsets.all(4), // jarak antara border dan tab
                     decoration: BoxDecoration(
                       color: AppColors.background,
-                      /*border: Border.all(
-                        color: AppColors.background,  // warna garis frame
-                        width: 1,
-                      ),*/
                       borderRadius: BorderRadius.circular(41),
                     ),
                     child: TabBar(
@@ -263,7 +255,7 @@ class _MutabaahSekolahPageState extends State<MutabaahSekolahPage> with SingleTi
                         Tab(text: 'Sekolah'),
                         Tab(text: 'Asrama'),
                       ],
-                      labelColor: Colors.white, // warna teks saat terpilih
+                      labelColor: Colors.white,
                       labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.bold
                       ),
@@ -272,10 +264,10 @@ class _MutabaahSekolahPageState extends State<MutabaahSekolahPage> with SingleTi
                         fontWeight: FontWeight.normal,
                       ),
                       indicator: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.7),      // warna latar tab terpilih
-                        borderRadius: BorderRadius.circular(30), // bikin bulat
+                        color: AppColors.primary.withValues(alpha: 0.7),
+                        borderRadius: BorderRadius.circular(30),
                       ),
-                      indicatorSize: TabBarIndicatorSize.tab, // biar indikator selebar tab
+                      indicatorSize: TabBarIndicatorSize.tab,
                       indicatorPadding: EdgeInsets.all(4),
                       dividerColor: Colors.transparent,
                     ),
@@ -288,8 +280,9 @@ class _MutabaahSekolahPageState extends State<MutabaahSekolahPage> with SingleTi
                         print('Has Error: ${snapshot.hasError}');
                         print('Error: ${snapshot.error}');
 
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
+                        if (snapshot.connectionState == ConnectionState.waiting &&
+                            snapshot.hasData == false) {
+                          return const Center(child: CircularProgressIndicator());
                         } else if (snapshot.hasError) {
                           return Center(child: Text('Gagal memuat data siswa'));
                         } else if (!snapshot.hasData) {
@@ -334,8 +327,14 @@ Widget buildCardViews(BuildContext context, dynamic mutabaah) {
   return Column(
     children: [
       _buildInfoRowWithIcon(
-        icon: Icons.book_rounded,
-        iconColor: mutabaah.bacaJilid.status ? AppColors.primary : AppColors.textPrimary,
+        icon: mutabaah.bacaJilid.kehadiran == 'Tidak Hadir' ? CupertinoIcons.xmark : Icons.book_rounded,
+        iconColor: !mutabaah.bacaJilid.status
+            ? AppColors.textPrimary
+            : mutabaah.bacaJilid.kehadiran == 'Izin' || mutabaah.bacaJilid.kehadiran == 'Sakit'
+              ? Colors.blue
+              : mutabaah.bacaJilid.kehadiran == "Tidak Hadir"
+                  ? Colors.red
+                  : AppColors.primary,
         label: 'Baca Jilid',
         value: '${mutabaah.bacaJilid.text}',
         showArrow: mutabaah.bacaJilid.status,
@@ -351,13 +350,19 @@ Widget buildCardViews(BuildContext context, dynamic mutabaah) {
         },
       ),
       _buildInfoRowWithIcon(
-        icon: CupertinoIcons.book_fill,
-        iconColor: mutabaah.bacaQuran.status ? AppColors.primary : AppColors.textPrimary,
+        icon: mutabaah.bacaQuran.kehadiran == 'Tidak Hadir' ? CupertinoIcons.xmark : CupertinoIcons.book_fill,
+        iconColor: !mutabaah.bacaQuran.status
+          ? AppColors.textPrimary
+          : mutabaah.bacaQuran.kehadiran == 'Izin' || mutabaah.bacaQuran.kehadiran == 'Sakit'
+            ? Colors.blue
+            : mutabaah.bacaQuran.kehadiran == "Tidak Hadir"
+              ? Colors.red
+              : AppColors.primary,
         label: 'Baca Al Quran',
         value: '${mutabaah.bacaQuran.text}',
-        showArrow: mutabaah.bacaQuran.status,
+        showArrow: mutabaah.bacaQuran.status || mutabaah.bacaQuran.isWarning ,
         onTap: () {
-          if (mutabaah.bacaQuran.status) {
+          if (mutabaah.bacaQuran.status || mutabaah.bacaQuran.isWarning) {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => DetailBacaAlquranPage(id: mutabaah.bacaQuran.id!))
@@ -368,8 +373,14 @@ Widget buildCardViews(BuildContext context, dynamic mutabaah) {
         },
       ),
       _buildInfoRowWithIcon(
-        icon: Icons.add,
-        iconColor: mutabaah.tahfidz.status ? AppColors.primary : AppColors.textPrimary,
+        icon: mutabaah.tahfidz.kehadiran == 'Tidak Hadir' ? CupertinoIcons.xmark : Icons.add,
+        iconColor: !mutabaah.tahfidz.status
+          ? AppColors.textPrimary
+          : mutabaah.tahfidz.kehadiran == 'Izin' || mutabaah.tahfidz.kehadiran == 'Sakit'
+            ? Colors.blue
+            : mutabaah.tahfidz.kehadiran == "Tidak Hadir"
+              ? Colors.red
+              : AppColors.primary,
         label: 'Tahfidz',
         value: '${mutabaah.tahfidz.text}',
         showArrow: mutabaah.tahfidz.status,
@@ -385,8 +396,14 @@ Widget buildCardViews(BuildContext context, dynamic mutabaah) {
         },
       ),
       _buildInfoRowWithIcon(
-        icon: Icons.replay,
-        iconColor: mutabaah.murojaah.status ? AppColors.primary : AppColors.textPrimary,
+        icon: mutabaah.murojaah.kehadiran == 'Tidak Hadir' ? CupertinoIcons.xmark : Icons.replay,
+        iconColor: !mutabaah.murojaah.status
+          ? AppColors.textPrimary
+          : mutabaah.murojaah.kehadiran == 'Izin' || mutabaah.murojaah.kehadiran == 'Sakit'
+            ? Colors.blue
+            : mutabaah.murojaah.kehadiran == "Tidak Hadir"
+              ? Colors.red
+              : AppColors.primary,
         label: 'Murojaah',
         value: '${mutabaah.murojaah.text}',
         showArrow: mutabaah.murojaah.status,
@@ -402,8 +419,14 @@ Widget buildCardViews(BuildContext context, dynamic mutabaah) {
         },
       ),
       _buildInfoRowWithIcon(
-        icon: CupertinoIcons.speaker_1_fill,
-        iconColor: mutabaah.talaqqi.status ? AppColors.primary : AppColors.textPrimary,
+        icon: mutabaah.talaqqi.kehadiran == 'Tidak Hadir' ? CupertinoIcons.xmark : CupertinoIcons.speaker_1_fill,
+        iconColor: !mutabaah.talaqqi.status
+          ? AppColors.textPrimary
+          : mutabaah.talaqqi.kehadiran == 'Izin' || mutabaah.talaqqi.kehadiran == 'Sakit'
+            ? Colors.blue
+            : mutabaah.talaqqi.kehadiran == "Tidak Hadir"
+              ? Colors.red
+              : AppColors.primary,
         label: 'Talaqqi',
         value: '${mutabaah.talaqqi.text}',
         showArrow: mutabaah.talaqqi.status,
@@ -502,8 +525,8 @@ Widget _buildInfoRowWithIcon({
   );
 }
 
-class fetchAllData {
+class FetchAllData {
   final GemaQuBacaJilidResponse gemaQuBacaJilid;
   final BukuAlKarimJilidResponse jilidList;
-  fetchAllData(this.gemaQuBacaJilid, this.jilidList);
+  FetchAllData(this.gemaQuBacaJilid, this.jilidList);
 }

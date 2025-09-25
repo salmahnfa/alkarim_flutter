@@ -15,7 +15,7 @@ Widget infoRow(String label, String value, {bool isHighlighted = false, bool isL
         isHighlighted
         ? Container(
             decoration: BoxDecoration(
-              color: value == 'Lulus' || value == 'Tidak Lulus' ? _getLulusColor(value).withValues(alpha: 0.1) : _getPredikatColor(value).withValues(alpha: 0.1),
+              color: value == 'Lulus' || value == 'Lanjut' || value == 'Tidak Lulus' || value == 'Ulang' ? _getLulusColor(value).withValues(alpha: 0.1) : _getPredikatColor(value).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
@@ -32,7 +32,7 @@ Widget infoRow(String label, String value, {bool isHighlighted = false, bool isL
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: value == 'Lulus' || value == 'Tidak lulus' ? _getLulusColor(value).withValues(alpha: 0.9) : _getPredikatColor(value).withValues(alpha: 0.9),
+                  color: value == 'Lulus' || value == 'Lanjut' || value == 'Tidak lulus' || value == 'Ulang' ? _getLulusColor(value).withValues(alpha: 0.9) : _getPredikatColor(value).withValues(alpha: 0.9),
                 )
               ),
             )
@@ -70,7 +70,7 @@ Color _getPredikatColor(String value) {
 }
 
 Color _getLulusColor(String value) {
-  if (value == 'Lulus') {
+  if (value == 'Lulus' || value == 'Lanjut') {
     return Colors.green;
   } else {
     return Colors.red;

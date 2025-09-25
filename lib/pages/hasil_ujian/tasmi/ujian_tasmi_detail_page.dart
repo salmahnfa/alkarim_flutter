@@ -52,19 +52,11 @@ class _UjianTasmiDetailPageState extends State<UjianTasmiDetailPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     infoRow('Tanggal', widget.item.tanggalUjian),
-                    infoRow('Juz', widget.item.juz),
-
-                    if (widget.item.nilaiDesimal.endsWith('.00'))...[
-                      infoRow('Nilai', widget.item.nilai.toString())
-                    ] else ...[
-                      infoRow('Nilai', widget.item.nilaiDesimal),
-                    ],
+                    infoRow('Juz', widget.item.juz, isLast: widget.item.predikat != null ? false : true),
 
                     if (widget.item.predikat != null) ...[
-                      infoRow('Predikat', capitalizeWords(widget.item.predikat)),
+                      infoRow('Predikat', capitalizeWords(widget.item.predikat), isHighlighted: true, isLast: true),
                     ],
-
-                    infoRow('Status', widget.item.lulus == 1 ? 'Lulus' : 'Tidak Lulus', isLast: true),
                   ],
                 ),
               ),

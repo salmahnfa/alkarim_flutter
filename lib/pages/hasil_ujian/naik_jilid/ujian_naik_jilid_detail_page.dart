@@ -61,7 +61,7 @@ class _UjianNaikJilidDetailPageState extends State<UjianNaikJilidDetailPage> {
                   ],
 
                   infoRow('Predikat', widget.item.nilaiHuruf),
-                  infoRow('Status', widget.item.lulus == 1 ? 'Lulus' : 'Tidak Lulus', isLast: true),
+                  infoRow('Status', widget.item.lulus == 1 ? 'Lulus' : 'Tidak Lulus', isHighlighted: true, isLast: true),
                 ],
               ),
             ),

@@ -78,23 +78,29 @@ class Surahs {
   final int id;
   final String nama;
   final int? nilai;
-  final String? nilaiDesimal;
   final String? nilaiHuruf;
+  final NilaiBawaan nilaiBawaan;
+  final NilaiZiyadah nilaiZiyadah;
+  final NilaiMurojaah nilaiMurojaah;
 
   Surahs({
     required this.id,
     required this.nama,
     required this.nilai,
-    required this.nilaiDesimal,
     required this.nilaiHuruf,
+    required this.nilaiBawaan,
+    required this.nilaiZiyadah,
+    required this.nilaiMurojaah,
   });
 
   Surahs.fromJson(Map<String, dynamic> json)
     : id = json['surah_id'],
       nama = json['surah_nama'],
       nilai = json['nilai'],
-      nilaiDesimal = json['nilai_decimal'],
-      nilaiHuruf = json['nilai_huruf'];
+      nilaiHuruf = json['nilai_huruf'],
+      nilaiBawaan = NilaiBawaan.fromJson(json['nilai_bawaan']),
+      nilaiZiyadah = NilaiZiyadah.fromJson(json['nilai_ziyadah']),
+      nilaiMurojaah = NilaiMurojaah.fromJson(json['nilai_murojaah']);
 }
 
 class NilaiBawaan {
@@ -120,8 +126,8 @@ class NilaiBawaan {
 class NilaiZiyadah {
   final String? nilai;
   final String nilaiHuruf;
-  final bool isCompleted;
-  final String text;
+  final bool? isCompleted;
+  final String? text;
 
   NilaiZiyadah({
     required this.nilai,

@@ -3,8 +3,8 @@ import 'package:alkarim/api/endpoints.dart';
 import 'package:alkarim/app_colors.dart';
 import 'package:alkarim/auth_helper.dart';
 import 'package:alkarim/checkbox_list.dart';
-import 'package:alkarim/models/gemaqu_murojaah_response.dart';
-import 'package:alkarim/models/surah_response.dart';
+import 'package:alkarim/models/gemaqu_murojaah_save_response.dart';
+import 'package:alkarim/models/surah_perjuz_response.dart';
 import 'package:alkarim/pages/beranda/mutabaah_gemaqu/mutabaah_gemaqu_page.dart';
 import 'package:alkarim/pages/login_page.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -23,7 +23,7 @@ class GemaQuMurojaahSurahFormPage extends StatefulWidget {
 class _GemaQuMurojaahSurahFormPageState extends State<GemaQuMurojaahSurahFormPage> {
   final _formKey = GlobalKey<FormState>();
 
-  late Future<SurahResponse> _future;
+  late Future<SurahPerjuzResponse> _future;
   String? _selectedJuz;
 
   List<bool> checkedList = [];
@@ -46,18 +46,18 @@ class _GemaQuMurojaahSurahFormPageState extends State<GemaQuMurojaahSurahFormPag
     _future = fetchData('1');
   }
 
-  Future<SurahResponse> fetchData(String juz) async {
+  Future<SurahPerjuzResponse> fetchData(String juz) async {
     final token = await AuthHelper.getActiveToken();
 
     if (token == null) {
       throw Exception('Pengguna perlu login ulang untuk melanjutkan.');
     }
 
-    final res = await api.request<SurahResponse>(
-      Endpoints.surah(juz),
+    final res = await api.request<SurahPerjuzResponse>(
+      Endpoints.surahPerjuz(juz),
       RequestType.GET,
       token: token,
-      fromJson: (json) => SurahResponse.fromJson(json),
+      fromJson: (json) => SurahPerjuzResponse.fromJson(json),
     );
     return res;
   }
@@ -79,12 +79,12 @@ class _GemaQuMurojaahSurahFormPageState extends State<GemaQuMurojaahSurahFormPag
       }
 
       try {
-        await api.request<GemaQuMurojaahResponse>(
-          Endpoints.mutabaahGemaQuMurojaah,
+        await api.request<GemaQuMurojaahSaveResponse>(
+          Endpoints.mutabaahGemaQuMurojaahSave,
           RequestType.POST,
           token: await AuthHelper.getActiveToken(),
           body: body,
-          fromJson: (json) => GemaQuMurojaahResponse.fromJson(json),
+          fromJson: (json) => GemaQuMurojaahSaveResponse.fromJson(json),
         );
 
         if (!mounted) return;
@@ -220,7 +220,7 @@ class _GemaQuMurojaahSurahFormPageState extends State<GemaQuMurojaahSurahFormPag
                         child: Column(
                           children: [
                             if (int.parse(_selectedJuz!) >= 26 && int.parse(_selectedJuz!) <= 30)
-                              FutureBuilder<SurahResponse>(
+                              FutureBuilder<SurahPerjuzResponse>(
                                 future: _future,
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState == ConnectionState.waiting) {

@@ -39,7 +39,7 @@ class DetailMutabaahList extends StatelessWidget {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: getKelompokColor(data.tipeKelompok),
+                      color: _getKelompokColor(data.tipeKelompok),
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
@@ -120,7 +120,7 @@ class DetailMutabaahBacaJilidList extends StatelessWidget {
                 children: [
                   Container(
                       decoration: BoxDecoration(
-                        color: getKelompokColor(data.tipeKelompok),
+                        color: _getKelompokColor(data.tipeKelompok),
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
@@ -162,7 +162,7 @@ class DetailMutabaahBacaJilidList extends StatelessWidget {
   }
 }
 
-Color getKelompokColor(String tipe) {
+Color _getKelompokColor(String tipe) {
   switch (tipe) {
     case 'Sekolah':
       return Colors.yellow;

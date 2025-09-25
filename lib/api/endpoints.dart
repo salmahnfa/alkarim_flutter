@@ -2,6 +2,9 @@ class Endpoints {
   // login
   static const String login = 'login';
 
+  // version check
+  static String versionCheck(String version) => 'check-version/$version';
+
   // pencapaian
   static const String pencapaian = 'siswa/dashboard2';
 
@@ -12,7 +15,7 @@ class Endpoints {
   // murottal
   static const String murottalSurahJuz = 'juz?murottal=true';
   static const String murottalAyatJuz = 'murottal-ayat/juz';
-  static String surah(String juz) => 'surah/$juz';
+  static String surahPerjuz(String juz) => 'surah/$juz';
   static String murottalSurah(String juz) => 'surah/$juz?murottal=true';
   static String murottalAyat(int id) => 'murottal-ayat/surah/$id';
 
@@ -21,14 +24,17 @@ class Endpoints {
   static const String doaBelajar = 'doa-belajar';
 
   // mutabaah gemaqu
+  static const String surah = 'surah';
   static String mutabaahGemaQuPerbulan(int month, int year) => 'siswa/mutabaah/ringkasan-perbulan/$month/$year';
   static String mutabaahGemaQuHarian(int year, int month, int day) => 'siswa/mutabaah/tanggal/$year-$month-$day';
   static String mutabaahGemaQuBacaJilid(String date) => 'siswa/mutabaah/jilid/tanggal/$date';
   static String mutabaahGemaQuBacaQuran(String date) => 'siswa/mutabaah/tilawah/tanggal/$date';
+  static String mutabaahGemaQuTahfidz(String date) => 'siswa/mutabaah/tahfidz/tanggal/$date';
+  static String mutabaahGemaQuMurojaah(String date) => 'siswa/mutabaah/murojaah/tanggal/$date';
   static const String mutabaahGemaQuBacaJilidSave = 'siswa/mutabaah/jilid/tanggal';
   static const String mutabaahGemaQuBacaQuranSave = 'siswa/mutabaah/tilawah/tanggal';
-  static const String mutabaahGemaQuTahfidz = 'siswa/mutabaah/tahfidz/tanggal';
-  static const String mutabaahGemaQuMurojaah = 'siswa/mutabaah/murojaah/tanggal';
+  static const String mutabaahGemaQuTahfidzSave = 'siswa/mutabaah/tahfidz/tanggal';
+  static const String mutabaahGemaQuMurojaahSave = 'siswa/mutabaah/murojaah/tanggal';
 
   //mutabaah sekolah
   static String mutabaahSekolahPerbulan(int month, int year) => 'siswa/mutabaah/sekolah/ringkasan-perbulan/$month/$year';

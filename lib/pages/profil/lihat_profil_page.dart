@@ -152,7 +152,10 @@ class _LihatProfilPageState extends State<LihatProfilPage> {
                         infoRow('NIS', data.nis),
                         infoRow('Unit', data.unit),
                         infoRow('Kelas', data.kelas),
-                        infoRow('Guru Quran', data.guruQuran, isLast: true),
+                        infoRow('Guru Quran', data.guruQuran, isLast: !data.isAsrama),
+                        if (data.isAsrama) ...[
+                          infoRow(data.guruAsramaGender == 'L' ? 'Musyrif' : 'Musyrifah', data.guruQuran, isLast: true),
+                        ]
                       ],
                     ),
                   ),

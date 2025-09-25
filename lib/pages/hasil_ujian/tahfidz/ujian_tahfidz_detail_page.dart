@@ -52,26 +52,15 @@ class _UjianTahfidzDetailPageState extends State<UjianTahfidzDetailPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (widget.item.juz != 0)...[
-                    if (widget.item.juz >= 1 && widget.item.juz < 26 ) ...[
+
+                    /*if (widget.item.juz >= 1 && widget.item.juz < 26 ) ...[
                       infoRow('Ujian', 'Juz ${widget.item.juz}'),
                       infoRow('Nilai Bawaan', (widget.item.nilaiBawaan.nilai!.isEmpty ? '-' : widget.item.nilaiBawaan.nilai!)),
                       infoRow('Nilai Ziyadah', widget.item.nilaiZiyadah.nilai ?? '-'),
                       infoRow('Nilai Murojaah', (widget.item.nilaiMurojaah.nilai!.isEmpty ? '-' : widget.item.nilaiMurojaah.nilai!), isLast: (widget.item.isCompleted ? false : true)),
-
-                      /*if (!widget.item.nilaiBawaan.isCompleted) ...[
-                        infoRow('Keterangan', widget.item.nilaiBawaan.text)
-                      ],
-
-                      if (!widget.item.nilaiZiyadah.isCompleted) ...[
-                        infoRow('Keterangan', widget.item.nilaiZiyadah.text)
-                      ],
-
-                      if (!widget.item.nilaiMurojaah.isCompleted) ...[
-                        infoRow('Keterangan', widget.item.nilaiMurojaah.text)
-                      ]*/
-                    ] else ...[
+                    ] else ...[*/
                       infoRow('Ujian', 'Juz ${widget.item.juz}', isLast: true),
-                    ]
+                    //]
                   ] else ...[
                     infoRow('Surah', widget.item.title, isLast: true)
                   ],
@@ -79,17 +68,16 @@ class _UjianTahfidzDetailPageState extends State<UjianTahfidzDetailPage> {
               ),
             ),
             SizedBox(height: 24),
-            if (widget.item.juz > 25 && widget.item.juz <= 30) ...[
-              Text(
-                'Detail Nilai',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+            Text(
+              'Detail Nilai',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
               ),
-              SizedBox(height: 12),
+            ),
+            SizedBox(height: 12),
+            if (widget.item.juz > 25 && widget.item.juz <= 30) ...[
               Table(
-                //border: TableBorder.all(color: Colors.white),
                 columnWidths: const {
                   0: FlexColumnWidth(1.5),
                   1: FlexColumnWidth(1),
@@ -115,33 +103,16 @@ class _UjianTahfidzDetailPageState extends State<UjianTahfidzDetailPage> {
                       ],
                     ),
                     children: [
-                      Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text('Surah', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text('Nilai Bawaan', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text('Nilai Ziyadah', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text('Nilai Murojaah', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
-                      ),
+                      _HeaderCell('Surah'),
+                      _HeaderCell('Bawaan'),
+                      _HeaderCell('Ziyadah'),
+                      _HeaderCell('Murojaah'),
                     ],
                   ),
                   for (final surah in widget.item.surahs) TableRow(
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(0),
-                        topRight: Radius.circular(0),
-                        bottomLeft: Radius.circular(0),
-                        bottomRight: Radius.circular(0)
-                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(0)),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black12.withValues(alpha: 0.05),
@@ -152,31 +123,192 @@ class _UjianTahfidzDetailPageState extends State<UjianTahfidzDetailPage> {
                     ),
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.only(top: 12, bottom: 12, left: 12, right: 8),
                         child: Text(surah.nama),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(12),
                         child: Text(
-                          (widget.item.nilaiBawaan.nilai.isEmpty) ? '-' : widget.item.nilaiBawaan.nilai,
+                          surah.nilaiBawaan.nilai.isEmpty ? '-' : surah.nilaiBawaan.nilai,
                           textAlign: TextAlign.center,
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(12),
                         child: Text(
-                          (widget.item.nilaiZiyadah.nilai.isEmpty) ? '-' : widget.item.nilaiZiyadah.nilai,
+                          surah.nilaiZiyadah.nilai.isEmpty ? '-' : surah.nilaiZiyadah.nilai,
                           textAlign: TextAlign.center,
-                        )
+                        ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(12),
                         child: Text(
-                          (widget.item.nilaiMurojaah.nilai.isEmpty) ? '-' : widget.item.nilaiMurojaah.nilai,
+                          surah.nilaiMurojaah.nilai.isEmpty ? '-' : surah.nilaiMurojaah.nilai,
                           textAlign: TextAlign.center,
-                        )
-                      )
-                    ]
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(0),
+                      topRight: Radius.circular(0),
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20)
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12.withValues(alpha: 0.05),
+                      blurRadius: 8,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+              ),
+            ] else ...[
+              Table(
+                columnWidths: const {
+                  0: FlexColumnWidth(1),
+                  1: FlexColumnWidth(1),
+                  2: FlexColumnWidth(1.8)
+                },
+                children: [
+                  TableRow(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                          bottomLeft: Radius.circular(0),
+                          bottomRight: Radius.circular(0)
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12.withValues(alpha: 0.05),
+                          blurRadius: 8,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    children: [
+                      _HeaderCell(''),
+                      _HeaderCell('Nilai'),
+                      _HeaderCell('Keterangan')
+                    ],
+                  ),
+                  TableRow(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(0)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12.withValues(alpha: 0.05),
+                          blurRadius: 8,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          'Bawaan',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          widget.item.nilaiBawaan.nilai.isEmpty ? '-' : widget.item.nilaiBawaan.nilai,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          widget.item.nilaiBawaan.text.isEmpty ? '-' : widget.item.nilaiBawaan.text,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
+                  TableRow(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(0)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12.withValues(alpha: 0.05),
+                          blurRadius: 8,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          'Ziyadah',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          widget.item.nilaiZiyadah.nilai.isEmpty ? '-' : widget.item.nilaiZiyadah.nilai,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          widget.item.nilaiZiyadah.text.isEmpty ? '-' : widget.item.nilaiZiyadah.text,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
+                  TableRow(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(0)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12.withValues(alpha: 0.05),
+                          blurRadius: 8,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          'Murojaah',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          widget.item.nilaiMurojaah.nilai.isEmpty ? '-' : widget.item.nilaiMurojaah.nilai,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          widget.item.nilaiMurojaah.text.isEmpty ? '-' : widget.item.nilaiMurojaah.text,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -201,71 +333,26 @@ class _UjianTahfidzDetailPageState extends State<UjianTahfidzDetailPage> {
                 ),
               ),
             ],
-            SizedBox(height: 24),
-            /*if (widget.item.juz > 25 && widget.item.juz <= 30) ...[
-              Text(
-                'Detail Nilai',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 12),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12.withValues(alpha: 0.05),
-                      blurRadius: 8,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Surah',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            'Nilai',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ]
-                    ),
-                    ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: widget.item.surahs.length,
-                        itemBuilder: (context, index) {
-                          final surahs = widget.item.surahs[index];
-                          return ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            title: Text(surahs.nama),
-                            subtitle: Text('Nilai: ${surahs.nilai ?? '-'}'),
-                          );
-                        }
-                    )
-                  ],
-                ),
-              ),
-            ],*/
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HeaderCell extends StatelessWidget {
+  final String text;
+  const _HeaderCell(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 16, bottom: 4),
+        child: Text(
+          text,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
     );

@@ -1,76 +1,72 @@
-import 'package:english_words/english_words.dart';
+import 'package:alkarim/models/version_check_response.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:provider/provider.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:alkarim/pages/login_page.dart';
-import 'package:alkarim/pages/beranda/beranda_page.dart';
 import 'package:alkarim/app_colors.dart';
 import 'package:alkarim/auth_helper.dart';
 
+import 'api/api_service.dart';
+import 'api/endpoints.dart';
+import 'pages/root_page.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await initializeDateFormatting('id_ID', null);
   await AuthHelper.init();
 
-  runApp(const MyApp());
+  final versionInfo = await _checkForUpdate();
+
+  runApp(MyApp(versionInfo: versionInfo));
+}
+
+class VersionInfo {
+  final bool showPopup;
+  final bool versionStatus;
+  final String? updateUrl;
+  VersionInfo({required this.showPopup, required this.versionStatus, this.updateUrl});
+}
+
+Future<VersionInfo> _checkForUpdate() async {
+  final info = await PackageInfo.fromPlatform();
+  final version = info.buildNumber.toString();
+
+  final token = await AuthHelper.getActiveToken();
+
+  final res = await api.request<VersionCheckResponse>(
+    Endpoints.versionCheck(version),
+    RequestType.GET,
+    token: token,
+    fromJson: (json) => VersionCheckResponse.fromJson(json),
+  );
+
+  return VersionInfo(
+    showPopup: res.data.showPopup,
+    versionStatus: res.data.versionStatus,
+    updateUrl: res.data.playstoreLink,
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final VersionInfo versionInfo;
+  const MyApp({super.key, required this.versionInfo});
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => MyAppState(),
-      child: MaterialApp(
-        title: 'Al Karim',
-        theme: ThemeData(
-          textTheme: GoogleFonts.poppinsTextTheme().copyWith(
-            bodyLarge: GoogleFonts.poppins(color: AppColors.textPrimary),
-            bodyMedium: GoogleFonts.poppins(color: AppColors.textPrimary),
-            bodySmall: GoogleFonts.poppins(color: AppColors.textPrimary),
-          ),
-
-          colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
-          splashColor: Colors.transparent,
+    return MaterialApp(
+      title: 'Al Karim',
+      theme: ThemeData(
+        textTheme: GoogleFonts.poppinsTextTheme().copyWith(
+          bodyLarge: GoogleFonts.poppins(color: AppColors.textPrimary),
+          bodyMedium: GoogleFonts.poppins(color: AppColors.textPrimary),
+          bodySmall: GoogleFonts.poppins(color: AppColors.textPrimary),
         ),
-        home: FutureBuilder<bool>(
-          future: AuthHelper.isLoggedIn(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Scaffold(
-                body: Center(child: CircularProgressIndicator()),
-              );
-            } else if (snapshot.hasData && snapshot.data!) {
-              return Beranda();
-            } else {
-              return LoginPage();
-            }
-          },
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
+        splashColor: Colors.transparent,
       ),
+      home: RootPage(versionInfo: versionInfo),
     );
-  }
-}
-
-class MyAppState extends ChangeNotifier {
-  var current = WordPair.random();
-
-  void getNext() {
-    current = WordPair.random();
-    notifyListeners();
-  }
-
-  var favorites = <WordPair>[];
-
-  void toggleFavorite() {
-    if (favorites.contains(current)) {
-      favorites.remove(current);
-    } else {
-      favorites.add(current);
-    }
-    notifyListeners();
   }
 }

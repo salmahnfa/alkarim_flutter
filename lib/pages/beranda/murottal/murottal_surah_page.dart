@@ -5,7 +5,7 @@ import 'package:alkarim/api/endpoints.dart';
 import 'package:alkarim/app_colors.dart';
 import 'package:alkarim/auth_helper.dart';
 import 'package:alkarim/item_list.dart';
-import 'package:alkarim/models/surah_response.dart';
+import 'package:alkarim/models/surah_perjuz_response.dart';
 import 'package:alkarim/pages/beranda/murottal/murottal_ayat_page.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +24,7 @@ class MurottalSurahPage extends StatefulWidget {
 }
 
 class _MurottalSurahPageState extends State<MurottalSurahPage> {
-  late Future<SurahResponse> _future;
+  late Future<SurahPerjuzResponse> _future;
   final _player = AudioPlayer();
 
   @override
@@ -39,18 +39,18 @@ class _MurottalSurahPageState extends State<MurottalSurahPage> {
     await session.configure(AudioSessionConfiguration.music());
   }
 
-  Future<SurahResponse> fetchData() async {
+  Future<SurahPerjuzResponse> fetchData() async {
     final token = await AuthHelper.getActiveToken();
 
     if (token == null) {
       throw Exception('Pengguna perlu login ulang untuk melanjutkan.');
     }
 
-    final res = await api.request<SurahResponse>(
+    final res = await api.request<SurahPerjuzResponse>(
       Endpoints.murottalSurah(widget.juz),
       RequestType.GET,
       token: token,
-      fromJson: (json) => SurahResponse.fromJson(json),
+      fromJson: (json) => SurahPerjuzResponse.fromJson(json),
     );
     return res;
   }
@@ -100,7 +100,7 @@ class _MurottalSurahPageState extends State<MurottalSurahPage> {
         elevation: 0,
       ),
       backgroundColor: AppColors.background,
-      body: FutureBuilder<SurahResponse>(
+      body: FutureBuilder<SurahPerjuzResponse>(
         future: _future,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {

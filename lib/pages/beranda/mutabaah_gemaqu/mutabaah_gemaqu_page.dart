@@ -318,13 +318,24 @@ class _MutabaahGemaQuPageState extends State<MutabaahGemaQuPage> {
                         iconColor: data.tahfidz.status ? AppColors.primary : AppColors.textPrimary,
                         label: 'Tahfidz',
                         value: '${data.tahfidz.text}',
-                        onTap: () => _showBottomSheet(
-                          context,
-                          {
-                            'Ayat': (_) => GemaQuTahfidzAyatFormPage(selectedDay: getOnlyDate(_selectedDay)),
-                            'Halaman': (_) => GemaQuTahfidzHalamanFormPage(selectedDay: getOnlyDate(_selectedDay)),
+                        onTap: () {
+                          if (data.tahfidz.status) {
+                            Navigator.push(
+                              context,
+                              data.tahfidz.tipeInput == 'halaman'
+                                ? MaterialPageRoute(builder: (_) => GemaQuTahfidzHalamanFormPage(selectedDay: getOnlyDate(_selectedDay)))
+                                : MaterialPageRoute(builder: (_) => GemaQuTahfidzAyatFormPage(selectedDay: getOnlyDate(_selectedDay)))
+                            );
+                          } else {
+                            _showBottomSheet(
+                              context, 
+                              {
+                                'Ayat': (_) => GemaQuTahfidzAyatFormPage(selectedDay: getOnlyDate(_selectedDay)),
+                                'Halaman': (_) => GemaQuTahfidzHalamanFormPage(selectedDay: getOnlyDate(_selectedDay)),
+                              }
+                            );
                           }
-                        ),
+                        }
                       ),
                       _buildInfoRowWithIcon(
                         icon: Icons.replay_rounded,
@@ -332,14 +343,25 @@ class _MutabaahGemaQuPageState extends State<MutabaahGemaQuPage> {
                         label: 'Murojaah',
                         value: '${data.murojaah.text}',
                         isLast: true,
-                        onTap: () => _showBottomSheet(
-                          context,
-                          {
-                            'Ayat': (_) => GemaQuMurojaahAyatFormPage(selectedDay: getOnlyDate(_selectedDay)),
-                            'Surah': (_) => GemaQuMurojaahSurahFormPage(selectedDay: getOnlyDate(_selectedDay)),
-                            'Halaman': (_) => GemaQuMurojaahHalamanFormPage(selectedDay: getOnlyDate(_selectedDay)),
+                        onTap: () {
+                          if (data.murojaah.status) {
+                            Navigator.push(
+                              context,
+                              data.bacaQuran.tipeInput == 'halaman'
+                                ? MaterialPageRoute(builder: (_) => GemaQuMurojaahHalamanFormPage(selectedDay: getOnlyDate(_selectedDay)))
+                                : MaterialPageRoute(builder: (_) => GemaQuMurojaahAyatFormPage(selectedDay: getOnlyDate(_selectedDay)))
+                            );
+                          } else {
+                            _showBottomSheet(
+                              context,
+                              {
+                                'Ayat': (_) => GemaQuMurojaahAyatFormPage(selectedDay: getOnlyDate(_selectedDay)),
+                                'Surah': (_) => GemaQuMurojaahSurahFormPage(selectedDay: getOnlyDate(_selectedDay)),
+                                'Halaman': (_) => GemaQuMurojaahHalamanFormPage(selectedDay: getOnlyDate(_selectedDay)),
+                              }
+                            );
                           }
-                        ),
+                        },
                       ),
                     ]
                   ),
@@ -419,7 +441,6 @@ void _showBottomSheet(BuildContext context, Map<String, WidgetBuilder> pages) {
 Widget _buildInfoRowWithIcon({
   required IconData icon,
   required Color iconColor,
-  Color? iconBackground,
   required String label,
   String? value,
   bool isLast = false,

@@ -137,6 +137,7 @@ class _BerandaPageState extends State<BerandaPage> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Stack(
           children: [
@@ -288,6 +289,17 @@ class _BerandaPageState extends State<BerandaPage> {
           ),
         ),
         const SizedBox(height: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Text(
+            "Pencapaian bulan ini",
+            textAlign: TextAlign.left,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
         FutureBuilder<SiswaPencapaianResponse>(
           future: _future,
           builder: (context, snapshot) {
@@ -309,34 +321,71 @@ class _BerandaPageState extends State<BerandaPage> {
                   _future = fetchData();
                 });
               },
-              child: SingleChildScrollView(
+              child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12.withValues(alpha: 0.05),
-                            blurRadius: 8,
-                            offset: Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Text(data.murojaah.toString()),
-                    ),
-                  ],
+                child: IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      InfoBox(label: 'Menghafal', value: '${data.ziyadah.surahMulai}: ${data.ziyadah.ayatMulai} - ${data.ziyadah.surahSelesai}: ${data.ziyadah.ayatSelesai}'),
+                      const SizedBox(width: 12),
+                      InfoBox(label: 'Murojaah', value: 'Juz ${data.murojaah}'),
+                      const SizedBox(width: 12),
+                      InfoBox(label: 'Membaca', value: 'Juz ${data.tilawah}'),
+                    ],
+                  ),
                 ),
               ),
             );
           }
         ),
       ],
+    );
+  }
+}
+
+class InfoBox extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const InfoBox({
+    super.key,
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12.withValues(alpha: 0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: RichText(
+          text: TextSpan(
+            style: Theme.of(context).textTheme.bodyMedium,
+            children: [
+              TextSpan(text: '$label '),
+              TextSpan(
+                text: value,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -384,3 +433,27 @@ class IconButtonWithLabel extends StatelessWidget {
     );
   }
 }
+
+Widget buildInfoBox(Data data) {
+  return Expanded(  
+    child: Container(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Text(
+        "Ziyadah dari ${data.ziyadah.surahMulai}:${data.ziyadah.ayatMulai} - "
+            "${data.ziyadah.surahSelesai}:${data.ziyadah.ayatSelesai}",
+      ),
+    ),
+  );
+}
+

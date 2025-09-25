@@ -19,7 +19,7 @@ class Data {
   final bool ziyadahStatus;
   final Ziyadah ziyadah;
   final bool murojaahStatus;
-  final int murojaah;
+  final String murojaah;
   final bool tilawahStatus;
   final String tilawah;
 

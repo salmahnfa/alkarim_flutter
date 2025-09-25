@@ -426,7 +426,6 @@ Widget buildCardViews(BuildContext context, dynamic mutabaah) {
 Widget _buildInfoRowWithIcon({
   required IconData icon,
   required Color iconColor,
-  Color? iconBackground,
   required String label,
   String? value,
   required bool showArrow,

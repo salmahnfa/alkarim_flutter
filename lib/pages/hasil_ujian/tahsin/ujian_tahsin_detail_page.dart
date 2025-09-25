@@ -67,6 +67,7 @@ class _UjianTahsinDetailPageState extends State<UjianTahsinDetailPage> {
           }
 
           final item = snapshot.data?.data;
+          print(item!.lulus == 1 ? 'Lulus' : 'Tidak Lulus');
 
           if (item == null) {
             return const Center(child: Text('Data tidak tersedia'));
@@ -112,7 +113,7 @@ class _UjianTahsinDetailPageState extends State<UjianTahsinDetailPage> {
                         infoRow('Semester', item.semester.capitalizeWords),
                         infoRow('Jenis Ujian', item.tipeUjian.capitalizeWords),
                         infoRow('Nilai', item.nilai.toString()),
-                        infoRow('Status', item.lulus == 1 ? 'Lulus' : 'Tidak Lulus', isLast: true),
+                        infoRow('Status', item.lulus == 1 ? 'Lulus' : 'Tidak Lulus', isHighlighted: true, isLast: true),
                       ],
                     ),
                   ),

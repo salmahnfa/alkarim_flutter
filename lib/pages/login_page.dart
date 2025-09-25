@@ -58,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
         );
       } catch (e) {
         debugPrint('Error: $e');
-        ScaffoldMessenger.of(context).showSnackBar(selfSnackbar('Email atau password salah'));
+        ScaffoldMessenger.of(context).showSnackBar(selfSnackbar('Email atau password salah $e'));
       } finally {
         setState(() {
           _isLoading = false;

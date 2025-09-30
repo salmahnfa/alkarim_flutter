@@ -97,7 +97,7 @@ class _GantiPasswordPageState extends State<GantiPasswordPage> {
               ),
               SizedBox(height: 8),
               Text(
-                "Masukkan password baru dan konfirmasi untuk memperbarui akun Anda.",
+                "Masukkan password baru dan konfirmasi untuk memperbarui akun.",
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.grey[600],

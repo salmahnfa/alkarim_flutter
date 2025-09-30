@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../models/gemaqu_baca_quran_response.dart';
-import 'mutabaah_gemaqu_page.dart';
 
 class GemaQuBacaQuranHalamanFormPage extends StatefulWidget {
   final DateTime selectedDay;
@@ -68,10 +67,10 @@ class _GemaQuBacaQuranHalamanFormPageState extends State<GemaQuBacaQuranHalamanF
           );
 
           if (!mounted) return;
-          Navigator.pushReplacement(
+          /*Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (_) => MutabaahGemaQuPage()),
-          );
+          );*/
         } catch (e) {
           debugPrint('Error: $e');
           ScaffoldMessenger.of(context).showSnackBar(selfSnackbar('Data gagal disimpan'));
@@ -206,7 +205,15 @@ class _GemaQuBacaQuranHalamanFormPageState extends State<GemaQuBacaQuranHalamanF
                         ),
                         const SizedBox(height: 16),
                         ElevatedButton(
-                          onPressed: _submitForm,
+                          onPressed: () {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              _submitForm();
+
+                              ScaffoldMessenger.of(context).showSnackBar(selfSnackbar('Data berhasil disimpan'));
+
+                              Navigator.pop<DateTime>(context, widget.selectedDay);
+                            }
+                          },
                           child: const Text('Simpan'),
                         )
                       ],

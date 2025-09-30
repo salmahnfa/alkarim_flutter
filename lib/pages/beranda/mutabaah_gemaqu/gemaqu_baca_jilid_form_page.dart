@@ -4,7 +4,6 @@ import 'package:alkarim/app_colors.dart';
 import 'package:alkarim/auth_helper.dart';
 import 'package:alkarim/models/buku_alkarim_jilid_response.dart';
 import 'package:alkarim/models/gemaqu_baca_jilid_save_response.dart';
-import 'package:alkarim/pages/beranda/mutabaah_gemaqu/mutabaah_gemaqu_page.dart';
 import 'package:alkarim/pages/login_page.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +32,16 @@ class _GemaQuBacaJilidPageState extends State<GemaQuBacaJilidFormPage> {
   @override
   void initState() {
     super.initState();
-    _future = fetchData();
+    _future = fetchData().then((resp) {
+      final details = resp.gemaQuBacaJilid.data;
+      if (details.status) {
+        _selectedValue = details.bukuAlKarimId.toString();
+        _halamanMulaiController.text = details.halamanMulai.toString();
+        _halamanSelesaiController.text = details.halamanSelesai.toString();
+      }
+
+      return resp;
+    });
   }
 
   @override
@@ -73,10 +81,11 @@ class _GemaQuBacaJilidPageState extends State<GemaQuBacaJilidFormPage> {
           );
 
           if (!mounted) return;
-          Navigator.pushReplacement(
+          //Navigator.pop(context, tanggal);
+          /*Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (_) => MutabaahGemaQuPage()),
-          );
+          );*/
         } catch (e) {
           debugPrint('Error: $e');
           ScaffoldMessenger.of(context).showSnackBar(selfSnackbar('Data gagal disimpan'));
@@ -129,16 +138,9 @@ class _GemaQuBacaJilidPageState extends State<GemaQuBacaJilidFormPage> {
           }
 
           final items = snapshot.data?.jilidList.data;
-          final details = snapshot.data?.gemaQuBacaJilid.data;
 
           if (items == null || items.isEmpty) {
             return const Center(child: Text('Tidak ada data jilid Al Karim'));
-          }
-
-          if (details!.status) {
-            _selectedValue = details.bukuAlKarimId.toString();
-            _halamanMulaiController.text = details.halamanMulai.toString();
-            _halamanSelesaiController.text = details.halamanSelesai.toString();
           }
 
           return SingleChildScrollView(
@@ -261,6 +263,8 @@ class _GemaQuBacaJilidPageState extends State<GemaQuBacaJilidFormPage> {
                               _submitForm();
 
                               ScaffoldMessenger.of(context).showSnackBar(selfSnackbar('Data berhasil disimpan'));
+
+                              Navigator.pop<DateTime>(context, widget.selectedDay);
                             }
                           },
                           child: const Text('Simpan'),

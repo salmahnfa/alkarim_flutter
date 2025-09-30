@@ -22,6 +22,7 @@ class Data {
   final int posisi;
   final String deskripsi;
   final int jumlahHalaman;
+  final int jumlahHalamanDilewati;
   final String filePath;
   final String? createdAt;
   final String? updatedAt;
@@ -34,6 +35,7 @@ class Data {
     required this.posisi,
     required this.deskripsi,
     required this.jumlahHalaman,
+    required this.jumlahHalamanDilewati,
     required this.filePath,
     required this.createdAt,
     required this.updatedAt,
@@ -47,6 +49,7 @@ class Data {
       posisi = json['posisi'],
       deskripsi = json['deskripsi'],
       jumlahHalaman = json['jml_hal'],
+      jumlahHalamanDilewati = json['jml_hal_dilewati'],
       filePath = json['file_path'],
       createdAt = json['created_at'],
       updatedAt = json['updated_at'],

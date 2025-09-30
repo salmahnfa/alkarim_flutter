@@ -22,6 +22,7 @@ class Data {
   final String nama;
   final String deskripsi;
   final int jumlahHalaman;
+  final int jumlahHalamanDilewati;
   final String filePath;
 
   Data({
@@ -29,6 +30,7 @@ class Data {
     required this.nama,
     required this.deskripsi,
     required this.jumlahHalaman,
+    required this.jumlahHalamanDilewati,
     required this.filePath,
   });
 
@@ -37,5 +39,6 @@ class Data {
       nama = json['nama'],
       deskripsi = json['deskripsi'],
       jumlahHalaman = json['jml_hal'],
+      jumlahHalamanDilewati = json['jml_hal_dilewati'],
       filePath = json['file_path'];
 }

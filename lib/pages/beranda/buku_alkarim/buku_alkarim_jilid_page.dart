@@ -80,7 +80,7 @@ class _BukuAlKarimJilidPageState extends State<BukuAlKarimJilidPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => BukuAlKarimPage(id: item.id, jilid: item.nama)),
+                        builder: (_) => BukuAlKarimPage(id: item.id, jilid: item.nama, jumlahHalamanDilewati: item.jumlahHalamanDilewati)),
                     );
                   },
                 );

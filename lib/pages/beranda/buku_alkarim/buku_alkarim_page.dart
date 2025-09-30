@@ -14,8 +14,9 @@ import 'package:pdfx/pdfx.dart';
 class BukuAlKarimPage extends StatefulWidget {
   final int id;
   final String jilid;
+  final int jumlahHalamanDilewati;
 
-  const BukuAlKarimPage({required this.id, required this.jilid, super.key});
+  const BukuAlKarimPage({required this.id, required this.jilid, required this.jumlahHalamanDilewati, super.key});
 
   @override
   State<BukuAlKarimPage> createState() => _BukuAlKarimPageState();
@@ -232,10 +233,13 @@ class _BukuAlKarimPageState extends State<BukuAlKarimPage> {
                               },
                             ),
                             const SizedBox(width: 20),
-                            Text(
-                              'Halaman $_currentPage',
-                              style: TextStyle(fontSize: 16),
-                            ),
+                            _currentPage <= widget.jumlahHalamanDilewati
+                              ? Text('Halaman 1',
+                                  style: TextStyle(fontSize: 16, color: AppColors.background),
+                                )
+                              : Text('Halaman ${_currentPage - widget.jumlahHalamanDilewati}',
+                                  style: TextStyle(fontSize: 16),
+                                ),
                             const SizedBox(width: 20),
                             IconButton(
                               icon: const Icon(Icons.chevron_right_rounded),

@@ -1,7 +1,6 @@
 import 'package:alkarim/app_colors.dart';
 import 'package:alkarim/auth_helper.dart';
 import 'package:alkarim/models/gemaqu_baca_quran_save_response.dart';
-import 'package:alkarim/pages/beranda/mutabaah_gemaqu/mutabaah_gemaqu_page.dart';
 import 'package:alkarim/pages/login_page.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
@@ -98,10 +97,10 @@ class _GemaQuBacaQuranAyatFormPageState extends State<GemaQuBacaQuranAyatFormPag
         );
 
         if (!mounted) return;
-        Navigator.pushReplacement(
+        /*Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => MutabaahGemaQuPage()),
-        );
+        );*/
       } catch (e) {
         debugPrint('Error: $e');
         ScaffoldMessenger.of(context).showSnackBar(selfSnackbar('Data gagal disimpan'));
@@ -399,7 +398,16 @@ class _GemaQuBacaQuranAyatFormPageState extends State<GemaQuBacaQuranAyatFormPag
                         ),
                         const SizedBox(height: 16),
                         ElevatedButton(
-                          onPressed: _submitForm,
+                          onPressed: () {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              _submitForm();
+
+                              ScaffoldMessenger.of(context).showSnackBar(selfSnackbar('Data berhasil disimpan'));
+
+                              Navigator.pop<DateTime>(context);
+                            }
+                          },
+
                           child: const Text('Simpan'),
                         )
                       ],

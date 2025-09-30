@@ -161,6 +161,13 @@ class _MutabaahSekolahPageState extends State<MutabaahSekolahPage> with SingleTi
                                 titleCentered: true,
                                 formatButtonVisible: false,
                               ),
+
+                              enabledDayPredicate: (day) {
+                                final today = DateTime.now();
+                                final dateOnly = DateTime(today.year, today.month, today.day);
+                                return day.isBefore(dateOnly) || day.isAtSameMomentAs(dateOnly);
+                              },
+
                               selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
                               onDaySelected: (selectedDay, focusedDay) {
                                 setState(() {
@@ -191,9 +198,9 @@ class _MutabaahSekolahPageState extends State<MutabaahSekolahPage> with SingleTi
 
                                   Color color;
                                   if (tipe == 'sebagian') {
-                                    color = AppColors.secondary;
+                                    color = AppColors.secondary.withValues(alpha: 0.7);
                                   } else if (tipe == 'lengkap') {
-                                    color = Colors.green;
+                                    color = AppColors.primary.withValues(alpha: 0.7);
                                   } else {
                                     return null;
                                   }
@@ -280,8 +287,7 @@ class _MutabaahSekolahPageState extends State<MutabaahSekolahPage> with SingleTi
                         print('Has Error: ${snapshot.hasError}');
                         print('Error: ${snapshot.error}');
 
-                        if (snapshot.connectionState == ConnectionState.waiting &&
-                            snapshot.hasData == false) {
+                        if (snapshot.connectionState == ConnectionState.waiting && snapshot.hasData == false) {
                           return const Center(child: CircularProgressIndicator());
                         } else if (snapshot.hasError) {
                           return Center(child: Text('Gagal memuat data siswa'));

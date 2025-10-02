@@ -1,6 +1,6 @@
 import 'package:alkarim/api/api_service.dart';
 import 'package:alkarim/api/endpoints.dart';
-import 'package:alkarim/app_colors.dart';
+import 'package:alkarim/theme/app_colors.dart';
 import 'package:alkarim/auth_helper.dart';
 import 'package:alkarim/info_row.dart';
 import 'package:alkarim/models/ujian_tahsin_detail_response.dart';

@@ -1,4 +1,4 @@
-import 'package:alkarim/app_colors.dart';
+import 'package:alkarim/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 

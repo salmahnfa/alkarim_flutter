@@ -1,4 +1,4 @@
-import 'package:alkarim/app_colors.dart';
+import 'package:alkarim/theme/app_colors.dart';
 import 'package:alkarim/auth_helper.dart';
 import 'package:alkarim/models/gemaqu_baca_quran_save_response.dart';
 import 'package:alkarim/pages/login_page.dart';

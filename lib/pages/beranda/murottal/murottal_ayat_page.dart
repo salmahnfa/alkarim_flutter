@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:alkarim/api/api_service.dart';
 import 'package:alkarim/api/endpoints.dart';
-import 'package:alkarim/app_colors.dart';
+import 'package:alkarim/theme/app_colors.dart';
 import 'package:alkarim/auth_helper.dart';
 import 'package:alkarim/item_list.dart';
 import 'package:alkarim/models/surah_perayat_response.dart';
@@ -65,7 +65,7 @@ class _MurottalAyatPageState extends State<MurottalAyatPage> {
   }
 
   Future<String> fetchAndSetupAudio(String url) async {
-    final token = AuthHelper.getActiveToken();
+    final token = await AuthHelper.getActiveToken();
     final response = await http.get(
       Uri.parse(url),
       headers: {'Authorization': 'Bearer $token'},
@@ -115,56 +115,60 @@ class _MurottalAyatPageState extends State<MurottalAyatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ayat Murottal'),
+        title: Text('Murottal Ayat'),
         backgroundColor: AppColors.background,
         elevation: 0,
       ),
       backgroundColor: AppColors.background,
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(
-            child: FutureBuilder<SurahPerayatResponse>(
-              future: _future,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Gagal memuat buku Al Karim'));
-                } else if (!snapshot.hasData) {
-                  return Center(child: Text('Tidak ada data buku Al Karim'));
-                }
+          Column(
+            children: [
+              Expanded(
+                child: FutureBuilder<SurahPerayatResponse>(
+                  future: _future,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Gagal memuat buku Al Karim'));
+                    } else if (!snapshot.hasData) {
+                      return Center(child: Text('Tidak ada data buku Al Karim'));
+                    }
 
-                final items = snapshot.data?.data.murottal;
-                print('Jumlah Ayat: ${items?.length}');
+                    final items = snapshot.data?.data.murottal;
+                    print('Jumlah Ayat: ${items?.length}');
 
-                return RefreshIndicator(
-                  onRefresh: () async {
-                    setState(() {
-                      _future = fetchData();
-                    });
-                  },
-                  child: ListView.builder(
-                    itemCount: items?.length ?? 0,
-                    itemBuilder: (context, index) {
-                      final item = items![index];
-                      return ItemList(
-                        title: item.ayat,
-                        showArrow: false,
-                        onTap: () {
-                          if (item.filePath.isNotEmpty == true) {
-                            playAudio(item.filePath.first, item.ayat);
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Audio tidak tersedia')),
-                            );
-                          }
+                    return RefreshIndicator(
+                      onRefresh: () async {
+                        setState(() {
+                          _future = fetchData();
+                        });
+                      },
+                      child: ListView.builder(
+                        itemCount: items?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          final item = items![index];
+                          return ItemList(
+                            title: item.ayat,
+                            showArrow: false,
+                            onTap: () {
+                              if (item.filePath.isNotEmpty == true) {
+                                playAudio(item.filePath.first, item.ayat);
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Audio tidak tersedia')),
+                                );
+                              }
+                            },
+                          );
                         },
-                      );
-                    },
-                  ),
-                );
-              },
-            )
+                      ),
+                    );
+                  },
+                )
+              ),
+            ],
           ),
           if (_currentTitle != null)
             Positioned(
@@ -197,18 +201,18 @@ class _MurottalAyatPageState extends State<MurottalAyatPage> {
                             return IconButton(
                               icon: Icon(
                                 isPlaying
-                                  ? Icons.pause_circle_filled_rounded
-                                  : Icons.play_circle_fill_rounded,
+                                    ? Icons.pause_circle_filled_rounded
+                                    : Icons.play_circle_fill_rounded,
                                 size: 42,
                                 color: AppColors.secondary,
                               ),
                               onPressed: () async {
                                 if (isPlaying) {
-                                await _player.pause();
+                                  await _player.pause();
                                 } else {
                                   // Kalau sudah completed, reset posisi
                                   if (_player.playerState.processingState == ProcessingState.completed) {
-                                  await _player.seek(Duration.zero);
+                                    await _player.seek(Duration.zero);
                                   }
                                   await _player.play();
                                 }
@@ -235,41 +239,6 @@ class _MurottalAyatPageState extends State<MurottalAyatPage> {
                         ),
                       ],
                     ),
-
-                        /*IconButton(
-                          icon: Icon(
-                            _isPlaying ? Icons.pause_circle_filled_rounded : Icons.play_circle_fill_rounded,
-                            size: 42,
-                            color: AppColors.secondary,
-                          ),
-                          onPressed: () async {
-                            if (_isPlaying) {
-                              await _player.pause();
-                            } else {
-                              await _player.play();
-                            }
-                            setState(() => _isPlaying = !_isPlaying);
-                          },
-                        ),
-                        SizedBox(height: 8),
-                        Expanded(
-                          child: Text(
-                            _currentTitle ?? '',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14,
-                              color: Colors.black87,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        SizedBox(width: 8),
-                        Text(
-                          "${_formatDuration(_currentPosition)} / ${_formatDuration(_totalDuration)}",
-                          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                        ),
-                      ]
-                    ),*/
                     SizedBox(height: 8),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
@@ -284,8 +253,8 @@ class _MurottalAyatPageState extends State<MurottalAyatPage> {
                     ),
                   ],
                 ),
+              ),
             ),
-          ),
         ],
       ),
     );

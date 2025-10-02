@@ -1,4 +1,4 @@
-import 'package:alkarim/app_colors.dart';
+import 'package:alkarim/theme/app_colors.dart';
 import 'package:alkarim/card_with_icon.dart';
 import 'package:alkarim/pages/beranda/murottal/murottal_juz_page.dart';
 import 'package:flutter/material.dart';

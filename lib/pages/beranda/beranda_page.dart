@@ -3,9 +3,10 @@ import 'package:alkarim/card_with_icon.dart';
 import 'package:alkarim/models/siswa_pencapaian_response.dart';
 import 'package:alkarim/pages/beranda/mutabaah_gemaqu/mutabaah_gemaqu_page.dart';
 import 'package:alkarim/pages/beranda/mutabaah_sekolah/mutabaah_sekolah_page.dart';
+import 'package:alkarim/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 
-import 'package:alkarim/app_colors.dart';
+import 'package:alkarim/theme/app_colors.dart';
 import 'package:alkarim/pages/profil/profil_page.dart';
 import 'package:alkarim/pages/hasil_ujian/hasil_ujian_page.dart';
 import 'package:alkarim/pages/beranda/buku_alkarim/buku_alkarim_jilid_page.dart';
@@ -63,31 +64,45 @@ class _BerandaState extends State<Beranda> {
           elevation: 0,
         ),
       backgroundColor: AppColors.background,
-      body: Container(
+      body: SingleChildScrollView(
           child: page
       ),
-      bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: AppColors.background,
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          selectedItemColor: AppColors.primary,
-          selectedLabelStyle: TextStyle(fontSize: 12, color: AppColors.primary),
-          unselectedItemColor: Colors.grey,
-          unselectedLabelStyle: TextStyle(fontSize: 12),
-          items: const [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.home_rounded),
-                label: 'Beranda'
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          splashFactory: NoSplash.splashFactory,
+          highlightColor: Colors.transparent,
+        ),
+        child: BottomNavigationBar(
+            backgroundColor: AppColors.background,
+            currentIndex: _selectedIndex,
+            onTap: _onItemTapped,
+            selectedItemColor: AppColors.primary[800],
+            selectedLabelStyle: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: AppColors.primary[800]
             ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.description_rounded),
-                label: 'Hasil Ujian'
+            unselectedItemColor: Colors.grey,
+            unselectedLabelStyle: TextStyle(
+              fontSize: 12,
+              color: AppColors.textPrimary.withValues(alpha: 0.7)
             ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.person_2_rounded),
-                label: 'Profil'
-            ),
-          ]
+            items: const [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.home_outlined),
+                  activeIcon: Icon(Icons.home),
+                  label: 'Beranda'
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.description_rounded),
+                  label: 'Hasil Ujian'
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.person_2_rounded),
+                  label: 'Profil'
+              ),
+            ]
+        ),
       ),
     );
   }
@@ -181,7 +196,7 @@ class _BerandaPageState extends State<BerandaPage> {
             ),
           ],
         ),
-        SizedBox(height: 16),
+        SizedBox(height: AppSpacing.md),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Container(
@@ -203,8 +218,8 @@ class _BerandaPageState extends State<BerandaPage> {
               children: [
                 IconButtonWithLabel(
                   icon: Icons.star_rounded,
-                  iconColor: AppColors.secondary,
-                  buttonColor: AppColors.background,
+                  iconColor: AppColors.secondary[700]!,
+                  buttonColor: AppColors.secondary.withValues(alpha: 0.1),
                   label: 'Buku \nAl Karim',
                   onPressed: () {
                     Navigator.push(
@@ -215,8 +230,8 @@ class _BerandaPageState extends State<BerandaPage> {
                 ),
                 IconButtonWithLabel(
                   icon: Icons.headphones_rounded,
-                  iconColor: AppColors.primary,
-                  buttonColor: AppColors.background,
+                  iconColor: AppColors.primary[700]!,
+                  buttonColor: AppColors.primary.withValues(alpha: 0.1),
                   label: 'Murottal\n',
                   onPressed: () {
                     Navigator.push(
@@ -227,8 +242,8 @@ class _BerandaPageState extends State<BerandaPage> {
                 ),
                 IconButtonWithLabel(
                   icon: Icons.anchor_rounded,
-                  iconColor: AppColors.secondary,
-                  buttonColor: AppColors.background,
+                  iconColor: AppColors.secondary[700]!,
+                  buttonColor: AppColors.secondary.withValues(alpha: 0.1),
                   label: 'Asmaul \nHusna',
                   onPressed: () {
                     Navigator.push(
@@ -239,8 +254,8 @@ class _BerandaPageState extends State<BerandaPage> {
                 ),
                 IconButtonWithLabel(
                   icon: Icons.book_rounded,
-                  iconColor: AppColors.primary,
-                  buttonColor: AppColors.background,
+                  iconColor: AppColors.primary[700]!,
+                  buttonColor: AppColors.primary.withValues(alpha: 0.1),
                   label: 'Doa \nBelajar',
                   onPressed: () {
                     Navigator.push(
@@ -253,7 +268,7 @@ class _BerandaPageState extends State<BerandaPage> {
             ),
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: AppSpacing.md),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(
@@ -305,11 +320,11 @@ class _BerandaPageState extends State<BerandaPage> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
+            } if (snapshot.hasError) {
               debugPrint('Future error: ${snapshot.error}');
               debugPrint('Stack trace: ${snapshot.stackTrace}');
               return Center(child: Text('Gagal memuat halaman'));
-            } else if (!snapshot.hasData) {
+            } if (!snapshot.hasData) {
               return Center(child: Text('Tidak ada data siswa'));
             }
             
@@ -328,11 +343,17 @@ class _BerandaPageState extends State<BerandaPage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      InfoBox(label: 'Menghafal', value: '${data.ziyadah.surahMulai}: ${data.ziyadah.ayatMulai} - ${data.ziyadah.surahSelesai}: ${data.ziyadah.ayatSelesai}'),
-                      const SizedBox(width: 12),
-                      InfoBox(label: 'Murojaah', value: 'Juz ${data.murojaah}'),
-                      const SizedBox(width: 12),
-                      InfoBox(label: 'Membaca', value: 'Juz ${data.tilawah}'),
+                      InfoBox(
+                        label: data.ziyadah.surahMulai.isNotEmpty ? 'Menghafal' : 'Belum ada data ziyadah',
+                        value: data.ziyadah.surahMulai.isNotEmpty ? '${data.ziyadah.surahMulai}: ${data.ziyadah.ayatMulai} - ${data.ziyadah.surahSelesai}: ${data.ziyadah.ayatSelesai}' : ''),
+                      const SizedBox(width: 8),
+                      InfoBox(
+                        label: data.murojaah.isNotEmpty ? 'Murojaah' : 'Belum ada data murojaah',
+                        value: data.murojaah.isNotEmpty ? 'Juz ${data.murojaah}' : ''),
+                      const SizedBox(width: 8),
+                      InfoBox(
+                        label: data.tilawah.isNotEmpty ? 'Membaca' : 'Belum ada data tilawah',
+                        value: data.tilawah.isNotEmpty ? 'Juz ${data.tilawah}' : ''),
                     ],
                   ),
                 ),
@@ -416,8 +437,8 @@ class IconButtonWithLabel extends StatelessWidget {
           onTap: onPressed,
           child: CircleAvatar(
               radius: 28,
-              backgroundColor: AppColors.background,
-              child: Icon(icon, color: iconColor.withValues(alpha: 0.7), size: 32)
+              backgroundColor: buttonColor,
+              child: Icon(icon, color: iconColor, size: 32)
           ),
         ),
         const SizedBox(height: 8),

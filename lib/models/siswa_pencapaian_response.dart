@@ -36,9 +36,9 @@ class Data {
     : ziyadahStatus = json['ziyadah_status'],
       ziyadah = Ziyadah.fromJson(json['ziyadah']),
       murojaahStatus = json['murojaah_status'],
-      murojaah = json['murojaah'],
+      murojaah = json['murojaah'].toString(),
       tilawahStatus = json['tilawah_status'],
-      tilawah = json['tilawah'];
+      tilawah = json['tilawah'].toString();
 }
 
 class Ziyadah {

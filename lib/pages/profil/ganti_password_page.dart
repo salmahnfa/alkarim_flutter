@@ -1,11 +1,9 @@
 import 'package:alkarim/api/endpoints.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:alkarim/app_colors.dart';
+import 'package:alkarim/theme/app_colors.dart';
 import 'package:alkarim/api/api_service.dart';
 import 'package:alkarim/models/ganti_password_response.dart';
-import 'package:alkarim/pages/login_page.dart';
 import 'package:alkarim/auth_helper.dart';
 
 class GantiPasswordPage extends StatefulWidget {
@@ -19,20 +17,28 @@ class _GantiPasswordPageState extends State<GantiPasswordPage> {
   final _confirmPasswordController = TextEditingController();
   bool _isPasswordObscure = true;
   bool _isConfirmPasswordObscure = true;
-  bool _isLoading = false;
 
   Future<void> _submitForm() async {
+    bool isLoading = false;
+
     if (_formKey.currentState!.validate()) {
       setState(() {
-        _isLoading = true;
+        isLoading = true;
       });
 
       debugPrint('Password Baru: ${_newPasswordController.text}');
       debugPrint('Konfirmasi Password: ${_confirmPasswordController.text}');
 
+      if (_newPasswordController.text != _confirmPasswordController.text) {
+        ScaffoldMessenger.of(context).showSnackBar(selfSnackbar('Password yang dimasukkan tidak sama'));
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
+
       try {
-        final prefs = await SharedPreferences.getInstance();
-        final token = prefs.getString('token');
+        final token = await AuthHelper.getActiveToken();
 
         if (token == null || token.isEmpty) {
           if (mounted) {
@@ -42,7 +48,7 @@ class _GantiPasswordPageState extends State<GantiPasswordPage> {
           return;
         }
 
-        final res = await api.request<GantiPasswordResponse>(
+        await api.request<GantiPasswordResponse>(
           Endpoints.gantiPassword,
           RequestType.POST,
           token: token,
@@ -53,19 +59,16 @@ class _GantiPasswordPageState extends State<GantiPasswordPage> {
           fromJson: (json) => GantiPasswordResponse.fromJson(json),
         );
 
-        await AuthHelper.logout();
-
         if (!mounted) return;
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => LoginPage()),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(selfSnackbar('Password berhasil diubah'));
+        Navigator.pop(context,);
+
       } catch (e) {
         debugPrint('Error: $e');
         ScaffoldMessenger.of(context).showSnackBar(selfSnackbar('Gagal mengubah password'));
       } finally {
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       }
     }

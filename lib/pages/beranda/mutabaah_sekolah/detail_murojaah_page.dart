@@ -3,7 +3,7 @@ import 'package:alkarim/api/endpoints.dart';
 import 'package:alkarim/auth_helper.dart';
 import 'package:flutter/material.dart';
 
-import '../../../app_colors.dart';
+import '../../../theme/app_colors.dart';
 import '../../../detail_mutabaah_list.dart';
 import '../../../models/mutabaah_sekolah_detail_response.dart';
 

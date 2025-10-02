@@ -1,4 +1,4 @@
-import 'package:alkarim/app_colors.dart';
+import 'package:alkarim/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 Widget infoRow(String label, String value, {bool isHighlighted = false, bool isLast = false}) {

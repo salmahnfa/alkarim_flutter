@@ -1,5 +1,5 @@
 import 'package:alkarim/api/endpoints.dart';
-import 'package:alkarim/app_colors.dart';
+import 'package:alkarim/theme/app_colors.dart';
 import 'package:alkarim/item_list.dart';
 import 'package:alkarim/models/ujian_tasmi_response.dart';
 import 'package:alkarim/pages/hasil_ujian/tasmi/ujian_tasmi_detail_page.dart';

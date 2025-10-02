@@ -4,7 +4,7 @@ import 'package:alkarim/pages/beranda/beranda_page.dart';
 
 import 'package:flutter/material.dart';
 
-import 'package:alkarim/app_colors.dart';
+import 'package:alkarim/theme/app_colors.dart';
 import 'package:alkarim/api/api_service.dart';
 import 'package:alkarim/auth_helper.dart';
 

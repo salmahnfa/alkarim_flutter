@@ -1,5 +1,5 @@
 import 'package:alkarim/api/endpoints.dart';
-import 'package:alkarim/app_colors.dart';
+import 'package:alkarim/theme/app_colors.dart';
 import 'package:alkarim/info_row.dart';
 import 'package:flutter/material.dart';
 

@@ -22,13 +22,14 @@ class Data {
   final int? juz;
   final String? keteranganJuz;
   final List<Surahs>? surahs;
+  final List<SurahPerJuz>? surahPerJuz;
   final bool inputSurah;
   final int halamanMulai;
   final int halamanSelesai;
-  final int surahIdMulai;
-  final int ayatMulai;
-  final int surahIdSelesai;
-  final int ayatSelesai;
+  final int? surahIdMulai;
+  final int? ayatMulai;
+  final int? surahIdSelesai;
+  final int? ayatSelesai;
 
   Data ({
     required this.tanggal,
@@ -37,6 +38,7 @@ class Data {
     required this.juz,
     required this.keteranganJuz,
     required this.surahs,
+    required this.surahPerJuz,
     required this.inputSurah,
     required this.halamanMulai,
     required this.halamanSelesai,
@@ -54,6 +56,9 @@ class Data {
       keteranganJuz = json['keterangan_juz'],
       surahs = (json['surahs'] as List? ?? [])
           .map((e) => Surahs.fromJson(e))
+          .toList(),
+      surahPerJuz = (json['surah_per_juz'] as List? ?? [])
+          .map((e) => SurahPerJuz.fromJson(e))
           .toList(),
       inputSurah = json['input_surah'],
       halamanMulai = json['halaman_mulai'],
@@ -76,4 +81,20 @@ class Surahs {
   Surahs.fromJson(Map<String, dynamic> json)
     : id = json['id'],
       nama = json['nama'];
+}
+
+class SurahPerJuz {
+  final int juz;
+  final List<Surahs> surahs;
+
+  SurahPerJuz ({
+    required this.juz,
+    required this.surahs,
+  });
+
+  SurahPerJuz.fromJson(Map<String, dynamic> json)
+    : juz = json['juz'],
+      surahs = (json['surahs'] as List? ?? [])
+        .map((e) => Surahs.fromJson(e))
+        .toList();
 }

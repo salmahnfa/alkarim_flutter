@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'app_colors.dart';
+import 'theme/app_colors.dart';
 
 class JilidList extends StatelessWidget {
   final String title;

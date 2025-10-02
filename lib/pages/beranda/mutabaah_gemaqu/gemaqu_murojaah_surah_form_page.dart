@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../models/gemaqu_murojaah_response.dart';
-import '../../../models/surah_response.dart';
 
 class GemaQuMurojaahSurahFormPage extends StatefulWidget {
   final DateTime selectedDay;
@@ -54,7 +53,7 @@ class _GemaQuMurojaahSurahFormPageState extends State<GemaQuMurojaahSurahFormPag
     final data = await fetchData(null);
 
     final details = data.gemaQuMurojaah.data;
-    if (details != null && details.status) {
+    if (details.status) {
       _selectedJuz = details.juz?.toString();
     } else {
       _selectedJuz ??= '1';
@@ -158,12 +157,27 @@ class _GemaQuMurojaahSurahFormPageState extends State<GemaQuMurojaahSurahFormPag
           final surahList = snapshot.data?.surahList.data ?? [];
           final details = snapshot.data?.gemaQuMurojaah.data;
 
-          checkedList = List.generate(surahList.length, (index) {
-            final surah = surahList[index];
-            return (details?.surahPerJuz ?? [])
-                .expand((spj) => spj.surahs)
-                .any((s) => s.id == surah.id);
-          });
+          if (checkedList.isEmpty || checkedList.length != surahList.length) {
+            checkedList = List.generate(surahList.length, (index) {
+              final surah = surahList[index];
+              return (details?.surahPerJuz ?? [])
+                  .expand((spj) => spj.surahs)
+                  .any((s) => s.id == surah.id);
+            });
+          }
+
+          final allSelectedSurahs = (details?.surahPerJuz ?? [])
+              .expand((spj) => spj.surahs)
+              .toList();
+
+          for (var surah in allSelectedSurahs) {
+            if (!selectedSurahIds.contains(surah.id)) {
+              selectedSurahIds.add(surah.id);
+            }
+            if (!selectedSurahNames.contains(surah.nama)) {
+              selectedSurahNames.add(surah.nama);
+            }
+          }
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
@@ -299,16 +313,17 @@ class _GemaQuMurojaahSurahFormPageState extends State<GemaQuMurojaahSurahFormPag
                                             isChecked: checkedList[index],
                                             onChanged: (bool? value) {
                                               setState(() {
-                                                checkedList[index] = value!;
-                                                if (value) {
-                                                  selectedSurahIds.add(item.id);
-                                                  selectedSurahNames.add(item.nama);
+                                                checkedList[index] = value ?? false;
+
+                                                if (value == true) {
+                                                  if (!selectedSurahIds.contains(surahList[index].id)) {
+                                                    selectedSurahIds.add(surahList[index].id);
+                                                  }
                                                 } else {
-                                                  selectedSurahIds.remove(item.id);
-                                                  selectedSurahNames.remove(item.nama);
+                                                  selectedSurahIds.remove(surahList[index].id);
                                                 }
                                               });
-                                              },
+                                            },
                                           );
                                           },
                                       ),
@@ -330,18 +345,18 @@ class _GemaQuMurojaahSurahFormPageState extends State<GemaQuMurojaahSurahFormPag
                                               Wrap(
                                                 spacing: 8,
                                                 runSpacing: 8,
-                                                children: selectedSurahNames.map((name) {
-                                                  return Chip(
-                                                    label: Text(name),
-                                                    onDeleted: () {
-                                                      setState(() {
-                                                        selectedSurahNames.remove(name);
-                                                        final index = surahList.indexWhere((it) => it.nama == name);
-                                                        if (index != -1) checkedList[index] = false;
-                                                      });
-                                                      },
-                                                  );
-                                                }).toList(),
+                                                children: [
+                                                  for (var i = 0; i < surahList.length; i++)
+                                                    if (checkedList[i])
+                                                      Chip(
+                                                        label: Text(surahList[i].nama),
+                                                        onDeleted: () {
+                                                          setState(() {
+                                                            checkedList[i] = false; // otomatis uncheck checkbox
+                                                          });
+                                                        },
+                                                      )
+                                                ],
                                               ),
                                             ]
                                           ),
